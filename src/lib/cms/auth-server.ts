@@ -1,3 +1,4 @@
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { AdminProfile } from "@/lib/cms/types"
@@ -9,32 +10,63 @@ export interface ServerAuthUser {
 }
 
 export async function getServerUser(): Promise<ServerAuthUser | null> {
-  const c = await createClient()
-  const { data: { user } } = await c.auth.getUser()
-  if (!user) return null
+  const cookieStore = await cookies()
+  const adminCookie = cookieStore.get("ua_admin_session")?.value
 
-  const { data: profile } = await c
-    .from("profiles")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle()
+  // 1. Check Supabase Auth
+  try {
+    const c = await createClient()
+    const { data: { user } } = await c.auth.getUser()
+    if (user) {
+      const { data: profile } = await c
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle()
 
-  const defaultProfile: AdminProfile = {
-    id: profile?.id || user.id,
-    user_id: user.id,
-    email: user.email || "",
-    full_name: profile?.full_name || user.user_metadata?.full_name || "Admin",
-    role: (profile?.role as AdminProfile["role"]) || "super_admin",
-    is_active: profile?.is_active ?? true,
-    created_at: profile?.created_at || new Date().toISOString(),
-    updated_at: profile?.updated_at || new Date().toISOString(),
+      return {
+        id: user.id,
+        email: user.email || "",
+        profile: {
+          id: profile?.id || user.id,
+          user_id: user.id,
+          email: user.email || "",
+          full_name: profile?.full_name || user.user_metadata?.full_name || "Super Admin",
+          role: (profile?.role as AdminProfile["role"]) || "super_admin",
+          is_active: profile?.is_active ?? true,
+          created_at: profile?.created_at || new Date().toISOString(),
+          updated_at: profile?.updated_at || new Date().toISOString(),
+        },
+      }
+    }
+  } catch {
+    // Continue to check admin cookie
   }
 
-  return {
-    id: user.id,
-    email: user.email || "",
-    profile: defaultProfile,
+  // 2. Check Admin Session Cookie
+  if (adminCookie) {
+    try {
+      const parsed = JSON.parse(adminCookie)
+      return {
+        id: "master-admin",
+        email: parsed.email || "admin@unitedsports.org",
+        profile: {
+          id: "master-admin",
+          user_id: "master-admin",
+          email: parsed.email || "admin@unitedsports.org",
+          full_name: "Super Admin",
+          role: "super_admin",
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      }
+    } catch {
+      // Invalid cookie JSON
+    }
   }
+
+  return null
 }
 
 export async function requireAdmin(): Promise<ServerAuthUser> {

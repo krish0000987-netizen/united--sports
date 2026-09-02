@@ -18,19 +18,46 @@ function errMessage(e: { message?: string } | null): string {
 // ── Who am I (used by activity logging + forms) ─────────────────────────────
 
 export async function getCurrentUser() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle()
-  return {
-    id: user.id,
-    email: user.email || null,
-    profile: profile as { full_name?: string; role?: string; is_active?: boolean } | null,
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle()
+      return {
+        id: user.id,
+        email: user.email || null,
+        profile: profile as { full_name?: string; role?: string; is_active?: boolean } | null,
+      }
+    }
+  } catch {
+    // Continue to check admin session cookie
   }
+
+  try {
+    const { cookies } = await import("next/headers")
+    const cookieStore = await cookies()
+    const adminCookie = cookieStore.get("ua_admin_session")?.value
+    if (adminCookie) {
+      const parsed = JSON.parse(adminCookie)
+      return {
+        id: "master-admin",
+        email: parsed.email || "admin@unitedsports.org",
+        profile: {
+          full_name: "Super Admin",
+          role: "super_admin",
+          is_active: true,
+        },
+      }
+    }
+  } catch {
+    // Ignore
+  }
+
+  return null
 }
 
 export async function createActivityLog(input: {

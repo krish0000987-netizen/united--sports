@@ -16,20 +16,41 @@ function LoginForm() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    if (!supabase) {
-      setErr("Supabase not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.")
-      return
-    }
     setLoading(true)
     setErr("")
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setErr(error.message)
+
+    try {
+      // 1. Try local API login (supports both Supabase Auth and Master Admin credentials)
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setErr(data.error || "Invalid login credentials. Please check your email and password.")
+        setLoading(false)
+        return
+      }
+
+      // 2. Also authenticate browser Supabase client if possible
+      if (supabase) {
+        try {
+          await supabase.auth.signInWithPassword({ email, password })
+        } catch {
+          // Ignore browser auth fallback
+        }
+      }
+
+      const redirectPath = searchParams.get("redirect") || "/admin"
+      router.push(redirectPath)
+      router.refresh()
+    } catch {
+      setErr("Failed to connect to login server. Please try again.")
       setLoading(false)
-      return
     }
-    router.push(searchParams.get("redirect") || "/admin")
-    router.refresh()
   }
 
   return (

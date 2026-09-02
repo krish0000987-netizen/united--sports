@@ -107,8 +107,19 @@ export function AdminSidebar({ profile, email }: { profile: AdminProfile | null;
   })
 
   async function handleSignOut() {
+    try {
+      await fetch("/api/admin/logout", { method: "POST" })
+    } catch {
+      // Ignore
+    }
     const c = createClient()
-    if (c) await c.auth.signOut()
+    if (c) {
+      try {
+        await c.auth.signOut()
+      } catch {
+        // Ignore
+      }
+    }
     router.push("/admin/login")
     router.refresh()
   }
