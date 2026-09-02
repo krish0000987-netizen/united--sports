@@ -6,7 +6,7 @@ import { PageHero } from "@/components/site/PageHero"
 import { Reveal } from "@/components/site/Reveal"
 import { ContactForm } from "./ContactForm"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 60
 
 export const metadata = {
   title: "Contact",

@@ -16,7 +16,7 @@ import { Reveal } from '@/components/site/Reveal'
 import { ArrowRight, MapPin } from 'lucide-react'
 import { formatDate } from '@/lib/format'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettingsServer()

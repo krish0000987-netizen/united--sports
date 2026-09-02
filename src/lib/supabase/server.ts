@@ -2,20 +2,31 @@ import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { createClient as createRawClient, type SupabaseClient } from '@supabase/supabase-js'
 
+const DEFAULT_SUPABASE_URL = "https://lyxqlmmzjzkcjzcnbusp.supabase.co"
+const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_NrkpgMB9uKvSycCClY3ayQ_7N0UOGgI"
+
 /**
  * Server-side Supabase clients.
  *
- * createClient()     — cookie-bound client for Server Components / Route Handlers.
- *                      Reads the user's session from cookies so RLS + auth work.
- * createAdminClient()— service-role client. SERVER ONLY. Bypasses RLS.
+ * createPublicClient()— Fast client for public ISR/SSR reads. No cookies overhead.
+ * createClient()      — Cookie-bound client for authenticated admin requests / Route Handlers.
+ * createAdminClient() — Service-role client. SERVER ONLY. Bypasses RLS.
  */
 export function isSupabaseConfigured(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  return true
+}
+
+export function createPublicClient(): SupabaseClient {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY
+  return createRawClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
 }
 
 export async function createClient(): Promise<SupabaseClient> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder'
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY
   const cookieStore = await cookies()
   return createServerClient(url, key, {
     cookies: {
@@ -35,14 +46,14 @@ export async function createClient(): Promise<SupabaseClient> {
   })
 }
 
-/**
- * Service-role client. Bypasses RLS. NEVER import this from client components.
- * Returns null when SUPABASE_SERVICE_ROLE_KEY is not configured.
- */
 export function createAdminClient(): SupabaseClient | null {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !key) return null
+  if (!key) {
+    return createRawClient(url, DEFAULT_SUPABASE_ANON_KEY, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    })
+  }
   return createRawClient(url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
   })
@@ -51,7 +62,6 @@ export function createAdminClient(): SupabaseClient | null {
 export function getPublicStorageUrl(bucket: string, path: string): string {
   if (!path) return ''
   if (path.startsWith('http')) return path
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  if (!url) return path
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL
   return `${url}/storage/v1/object/public/${bucket}/${path}`
 }

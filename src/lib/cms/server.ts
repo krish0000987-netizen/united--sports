@@ -7,7 +7,7 @@
 // is still being configured or during cold starts.
 // ============================================================================
 
-import { createClient } from "@/lib/supabase/server"
+import { createPublicClient } from "@/lib/supabase/server"
 import type {
   SiteSettings,
   Page,
@@ -439,7 +439,7 @@ export const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
 
 export async function getSiteSettingsServer(): Promise<SiteSettings | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_SITE_SETTINGS
     const { data, error } = await c
       .from("site_settings")
@@ -459,7 +459,7 @@ export async function getSiteSettingsServer(): Promise<SiteSettings | null> {
 
 export async function getPagesServer(): Promise<Page[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return []
     const { data, error } = await c
       .from("pages")
@@ -474,7 +474,7 @@ export async function getPagesServer(): Promise<Page[]> {
 
 export async function getPageBySlugServer(slug: string): Promise<Page | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return null
     const { data, error } = await c
       .from("pages")
@@ -497,7 +497,7 @@ export async function getArticlesServer(opts?: {
   categoryId?: string
 }): Promise<Article[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_ARTICLES.slice(0, opts?.limit || 10)
     let q = c
       .from("articles")
@@ -516,7 +516,7 @@ export async function getArticlesServer(opts?: {
 
 export async function getArticleBySlugServer(slug: string): Promise<Article | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_ARTICLES.find((a) => a.slug === slug) || null
     const { data, error } = await c
       .from("articles")
@@ -533,7 +533,7 @@ export async function getArticleBySlugServer(slug: string): Promise<Article | nu
 
 export async function getArticleCategoriesServer(): Promise<ArticleCategory[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return []
     const { data, error } = await c
       .from("categories")
@@ -554,7 +554,7 @@ export async function getEventsServer(opts?: {
   upcoming?: boolean
 }): Promise<Event[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_EVENTS.slice(0, opts?.limit || 10)
     let q = c
       .from("events")
@@ -573,7 +573,7 @@ export async function getEventsServer(opts?: {
 
 export async function getEventBySlugServer(slug: string): Promise<Event | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_EVENTS.find((e) => e.slug === slug) || null
     const { data, error } = await c
       .from("events")
@@ -595,7 +595,7 @@ export async function getProgrammesServer(opts?: {
   limit?: number
 }): Promise<Programme[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_PROGRAMMES.slice(0, opts?.limit || 10)
     let q = c
       .from("programmes")
@@ -613,7 +613,7 @@ export async function getProgrammesServer(opts?: {
 
 export async function getProgrammeBySlugServer(slug: string): Promise<Programme | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_PROGRAMMES.find((p) => p.slug === slug) || null
     const { data, error } = await c
       .from("programmes")
@@ -636,7 +636,7 @@ export async function getAthletesServer(opts?: {
   sport?: string
 }): Promise<Athlete[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_ATHLETES.slice(0, opts?.limit || 10)
     let q = c
       .from("athletes")
@@ -655,7 +655,7 @@ export async function getAthletesServer(opts?: {
 
 export async function getAthleteBySlugServer(slug: string): Promise<Athlete | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_ATHLETES.find((a) => a.slug === slug) || null
     const { data, error } = await c
       .from("athletes")
@@ -677,7 +677,7 @@ export async function getTeamsServer(opts?: {
   limit?: number
 }): Promise<Team[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return []
     let q = c
       .from("teams")
@@ -695,7 +695,7 @@ export async function getTeamsServer(opts?: {
 
 export async function getTeamBySlugServer(slug: string): Promise<Team | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return null
     const { data, error } = await c
       .from("teams")
@@ -713,7 +713,7 @@ export async function getTeamBySlugServer(slug: string): Promise<Team | null> {
 /** Roster rows for a team with the athlete record joined in. */
 export async function getTeamAthletesServer(teamId: string) {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return []
     const { data, error } = await c
       .from("team_athletes")
@@ -734,7 +734,7 @@ export async function getTestimonialsServer(opts?: {
   limit?: number
 }): Promise<Testimonial[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_TESTIMONIALS.slice(0, opts?.limit || 10)
     let q = c
       .from("testimonials")
@@ -758,7 +758,7 @@ export async function getGalleryItemsServer(opts?: {
   category?: string
 }): Promise<GalleryItem[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_GALLERY_ITEMS.slice(0, opts?.limit || 10)
     let q = c
       .from("gallery")
@@ -779,7 +779,7 @@ export async function getGalleryItemsServer(opts?: {
 
 export async function getHomepageHeroServer(): Promise<HomepageHero | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_HOMEPAGE_HERO
     const { data, error } = await c
       .from("homepage_hero")
@@ -797,7 +797,7 @@ export async function getHomepageHeroServer(): Promise<HomepageHero | null> {
 
 export async function getHomepageSectionsServer(): Promise<HomepageSection[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_HOMEPAGE_SECTIONS
     const { data, error } = await c
       .from("homepage_sections")
@@ -814,7 +814,7 @@ export async function getHomepageFeaturedServer(
   sectionId: string,
 ): Promise<HomepageFeatured | null> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return null
     const { data, error } = await c
       .from("homepage_featured")
@@ -832,7 +832,7 @@ export async function getHomepageFeaturedServer(
 
 export async function getNavigationItemsServer(): Promise<NavigationItem[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_NAVIGATION_ITEMS
     const { data, error } = await c
       .from("navigation_items")
@@ -850,7 +850,7 @@ export async function getNavigationItemsServer(): Promise<NavigationItem[]> {
 
 export async function getFooterSectionsServer(): Promise<FooterSection[]> {
   try {
-    const c = await createClient()
+    const c = createPublicClient()
     if (!c) return DEFAULT_FOOTER_SECTIONS
     const { data: sections, error } = await c
       .from("footer_sections")
