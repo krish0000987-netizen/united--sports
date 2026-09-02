@@ -42,7 +42,7 @@ export function SiteHeader({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={settings.logo_url}
-              alt={`${settings.site_name} emblem`}
+              alt={`${settings?.site_name || "UnitedAthletes"} emblem`}
               width={44}
               height={44}
               className="h-11 w-11 rounded-full object-contain ring-1 ring-primary/40"
