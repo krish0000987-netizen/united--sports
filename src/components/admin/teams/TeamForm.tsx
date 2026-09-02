@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createTeam, updateTeam, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createTeam, updateTeam, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { Team } from "@/lib/cms/types"
 
@@ -21,7 +21,7 @@ export function TeamForm({ team }: { team: Team | null }) {
     description: team?.description || "",
     logo: team?.logo || null,
     cover_image: team?.cover_image || null,
-    status: team?.status || "active",
+    status: team?.status || "published",
     display_order: team?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -101,7 +101,7 @@ export function TeamForm({ team }: { team: Team | null }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-end gap-2 sticky top-14 lg:top-0 bg-slate-50 py-3 z-10 -mt-3">
-        {team && team.status === "active" && (
+        {team && team.status === "published" && (
           <Button asChild href={`/teams/${team.slug}`} variant="outline">
             <Eye size={14} /> Preview
           </Button>
@@ -175,8 +175,9 @@ export function TeamForm({ team }: { team: Team | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "active", label: "Active" },
-                  { value: "inactive", label: "Inactive" },
+                  { value: "published", label: "Published" },
+                  { value: "draft", label: "Draft" },
+                  { value: "archived", label: "Archived" },
                 ]}
               />
               <Input

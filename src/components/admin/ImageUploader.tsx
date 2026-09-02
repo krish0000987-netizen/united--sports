@@ -3,8 +3,20 @@ import { useState, useRef } from "react"
 import Image from "next/image"
 import { Upload, X, Loader2, ImageIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { uploadMedia, deleteMedia } from "@/lib/cms/data"
 import { toast } from "@/components/ui/toast"
+
+const API_BASE = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? "/api/upload"
+  : null
+
+/** Extract the storage path from a public media URL (or return null for external URLs). */
+function extractPath(url: string | null): string | null {
+  if (!url) return null
+  const marker = "/storage/v1/object/public/media/"
+  const idx = url.indexOf(marker)
+  if (idx === -1) return null
+  return url.substring(idx + marker.length)
+}
 
 interface ImageUploaderProps {
   value: string | null
@@ -41,27 +53,56 @@ export function ImageUploader({
     setUploading(true)
     setProgress(0)
     try {
-      // Simulated progress (Supabase doesn't provide upload progress easily)
+      if (!API_BASE) {
+        toast.error("Upload not configured: missing Supabase URL")
+        return
+      }
+
+      // Simulated progress
       const progressInterval = setInterval(() => {
         setProgress((p) => Math.min(p + 10, 90))
       }, 100)
 
-      const result = await uploadMedia(file, folder)
+      const form = new FormData()
+      form.set("file", file)
+      form.set("bucket", folder)
+
+      const res = await fetch(API_BASE, {
+        method: "POST",
+        body: form,
+        credentials: "include",
+      })
+
       clearInterval(progressInterval)
       setProgress(100)
 
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        toast.error(err.error || "Upload failed")
+        return
+      }
+
+      const result = await res.json()
       if (result.error) {
         toast.error(result.error)
       } else if (result.url) {
-        // If there was a previous image, delete it
-        if (value && !value.startsWith("http")) {
-          await deleteMedia(value).catch(() => {})
+        // If there was a previous uploaded image, delete it via API
+        const oldPath = extractPath(value)
+        if (oldPath && API_BASE) {
+          try {
+            await fetch(API_BASE, {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ path: oldPath, bucket: "media" }),
+              credentials: "include",
+            }).catch(() => {})
+          } catch {}
         }
         onChange(result.url)
         toast.success("Image uploaded successfully")
       }
-    } catch (err) {
-      toast.error("Failed to upload image")
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to upload image")
     } finally {
       setUploading(false)
       setProgress(0)
@@ -71,9 +112,16 @@ export function ImageUploader({
 
   async function handleRemove() {
     if (value) {
-      // Only attempt to delete if it's from our storage
-      if (value.includes("/storage/v1/object/public/media/")) {
-        await deleteMedia(value).catch(() => {})
+      const path = extractPath(value)
+      if (path && API_BASE) {
+        try {
+          await fetch(API_BASE, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ path, bucket: "media" }),
+            credentials: "include",
+          }).catch(() => {})
+        } catch {}
       }
       onChange(null)
       toast.success("Image removed")

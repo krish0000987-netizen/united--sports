@@ -2,9 +2,9 @@
 import { Trash2, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { deleteArticle } from "@/lib/cms/data"
+import { deleteArticle, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { toast } from "@/components/ui/toast"
-import { useConfirm, ConfirmDialog } from "@/components/admin/ConfirmDialog"
+import { useConfirm } from "@/components/admin/ConfirmDialog"
 
 export function DeleteArticleButton({ id, title }: { id: string; title: string }) {
   const router = useRouter()
@@ -20,13 +20,27 @@ export function DeleteArticleButton({ id, title }: { id: string; title: string }
     })
     if (!ok) return
     setLoading(true)
-    const { error } = await deleteArticle(id)
-    setLoading(false)
-    if (error) {
-      toast.error(error)
-    } else {
+    try {
+      const { error } = await deleteArticle(id)
+      if (error) {
+        toast.error(error)
+        return
+      }
+      const user = await getCurrentUser()
+      await createActivityLog({
+        admin_user_id: user?.id || null,
+        admin_email: user?.email || null,
+        action: "delete",
+        entity_type: "article",
+        entity_id: id,
+        description: title,
+      })
       toast.success("Article deleted")
       router.refresh()
+    } catch {
+      toast.error("Failed to delete article")
+    } finally {
+      setLoading(false)
     }
   }
 

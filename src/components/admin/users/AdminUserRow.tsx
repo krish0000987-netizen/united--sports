@@ -3,11 +3,10 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, Save } from "lucide-react"
 import { Select } from "@/components/ui/form"
-import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { updateAdminProfile, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { updateAdminUser, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { AdminProfile } from "@/lib/cms/types"
 
 export function AdminUserRow({ profile }: { profile: AdminProfile }) {
@@ -26,7 +25,7 @@ export function AdminUserRow({ profile }: { profile: AdminProfile }) {
     })
     if (!ok) return
     setBusy(true)
-    const { error } = await updateAdminProfile(profile.id, { role, is_active: isActive })
+    const { error } = await updateAdminUser(profile.id, { role, is_active: isActive })
     setBusy(false)
     if (error) {
       toast.error(error)

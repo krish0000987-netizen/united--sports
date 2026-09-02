@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, Save, Loader2, X, Trash2, Edit, ArrowUp, ArrowDown, ExternalLink } from "lucide-react"
-import { Input, Select } from "@/components/ui/form"
+import { Input } from "@/components/ui/form"
 import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
@@ -16,7 +16,7 @@ import {
   deleteFooterLink,
   createActivityLog,
   getCurrentUser,
-} from "@/lib/cms/data"
+} from "@/lib/cms/client-actions"
 import { FooterSection, FooterLink } from "@/lib/cms/types"
 
 export function FooterManager({ sections }: { sections: FooterSection[] }) {
@@ -57,8 +57,12 @@ export function FooterManager({ sections }: { sections: FooterSection[] }) {
     setBusy(section.id)
     const { error } = await updateFooterSection(section.id, { is_active: !section.is_active })
     setBusy(null)
-    if (error) toast.error(error)
-    else router.refresh()
+    if (error) {
+      toast.error(error)
+    } else {
+      toast.success(section.is_active ? "Section deactivated" : "Section activated")
+      router.refresh()
+    }
   }
 
   async function removeSection(section: FooterSection) {
@@ -121,10 +125,9 @@ export function FooterManager({ sections }: { sections: FooterSection[] }) {
       toast.error(error)
       return
     }
-    const user = await getCurrentUser()
     await createActivityLog({
-      admin_user_id: user?.id || null,
-      admin_email: user?.email || null,
+      admin_user_id: null,
+      admin_email: null,
       action: "delete",
       entity_type: "footer_link",
       entity_id: link.id,

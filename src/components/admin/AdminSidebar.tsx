@@ -10,7 +10,6 @@ import {
   Trophy,
   Calendar,
   Users,
-  Award,
   MessageSquareQuote,
   Images,
   Mail,
@@ -110,7 +109,7 @@ export function AdminSidebar({ profile, email }: { profile: AdminProfile | null;
   async function handleSignOut() {
     const c = createClient()
     if (c) await c.auth.signOut()
-    router.push("/login")
+    router.push("/admin/login")
     router.refresh()
   }
 
@@ -151,7 +150,6 @@ export function AdminSidebar({ profile, email }: { profile: AdminProfile | null;
             <SidebarContent
               profile={profile}
               email={email}
-              pathname={pathname}
               expanded={expanded}
               toggleSection={toggleSection}
               isActive={isActive}
@@ -168,7 +166,6 @@ export function AdminSidebar({ profile, email }: { profile: AdminProfile | null;
         <SidebarContent
           profile={profile}
           email={email}
-          pathname={pathname}
           expanded={expanded}
           toggleSection={toggleSection}
           isActive={isActive}
@@ -184,7 +181,6 @@ export function AdminSidebar({ profile, email }: { profile: AdminProfile | null;
 function SidebarContent({
   profile,
   email,
-  pathname,
   expanded,
   toggleSection,
   isActive,
@@ -194,7 +190,6 @@ function SidebarContent({
 }: {
   profile: AdminProfile | null
   email: string
-  pathname: string
   expanded: Record<string, boolean>
   toggleSection: (label: string) => void
   isActive: (href: string) => boolean

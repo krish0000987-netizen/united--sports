@@ -7,7 +7,7 @@ import { Select, Textarea } from "@/components/ui/form"
 import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { toast } from "@/components/ui/toast"
-import { updateEnquiry, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { updateEnquiry, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { Enquiry } from "@/lib/cms/types"
 import { formatDate } from "@/lib/format"
 
@@ -20,10 +20,7 @@ export function EnquiryManager({ enquiry }: { enquiry: Enquiry }) {
   async function save() {
     setSaving(true)
     try {
-      const { error } = await updateEnquiry(enquiry.id, {
-        status,
-        admin_notes: adminNotes.trim() || null,
-      })
+      const { error } = await updateEnquiry(enquiry.id, status, adminNotes.trim() || undefined)
       if (error) {
         toast.error(error)
         return

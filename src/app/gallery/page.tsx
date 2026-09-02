@@ -1,68 +1,78 @@
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
-import { getSiteSettingsServer, getGalleryItemsServer } from "@/lib/cms/server"
-import Image from "next/image"
+import { getGalleryItemsServer } from "@/lib/cms/server"
+import PublicShell from "@/components/site/PublicShell"
+import { PageHero } from "@/components/site/PageHero"
+import { Reveal } from "@/components/site/Reveal"
 
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: "Gallery | United Sports",
-  description: "Browse our photo gallery showcasing events, athletes, and moments from United Sports.",
+  title: "Gallery",
+  description: "Moments captured from UnitedAthletes events, training, and community life.",
 }
 
 export default async function GalleryPage() {
-  const [settings, items] = await Promise.all([
-    getSiteSettingsServer(),
-    getGalleryItemsServer({ status: "active" }),
-  ])
+  const items = await getGalleryItemsServer({ status: "published" })
+  const categories = [...new Set(items.map((g) => g.category).filter(Boolean))] as string[]
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header settings={settings} />
+    <PublicShell>
+      <PageHero
+        eyebrow="Gallery"
+        title={<>Moments <span className="text-gold-gradient">Captured</span></>}
+        subtitle="A look at our events, athletes, training sessions, and community moments."
+        image="/assets/equipment.jpg"
+        alt="Premium sports equipment on a dark surface"
+      />
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0B1D3A] via-[#0B1D3A] to-[#1a3a6b] text-white">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
-        <div className="relative max-w-[1280px] mx-auto px-4 py-20 md:py-28">
-          <p className="text-sm font-semibold text-[#C9A227] uppercase tracking-wider">Moments Captured</p>
-          <h1 className="text-4xl md:text-5xl font-bold mt-2">Gallery</h1>
-          <p className="mt-4 text-white/80 text-lg max-w-2xl">
-            A look at our events, athletes, training sessions, and community moments.
-          </p>
-        </div>
-      </section>
-
-      <main className="flex-1 max-w-[1280px] mx-auto px-4 py-12 w-full">
+      <section className="mx-auto max-w-7xl px-5 py-24">
         {items.length === 0 ? (
-          <div className="text-center py-20 text-slate-500">
-            <p className="text-lg">No gallery items to display yet.</p>
-          </div>
+          <p className="py-20 text-center text-muted-foreground">
+            Gallery photos will be published soon.
+          </p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {items.map((g) => (
-              <div
-                key={g.id}
-                className="group relative aspect-square rounded-2xl overflow-hidden bg-slate-100 hover:shadow-xl transition"
-              >
-                <Image
-                  src={g.image_url}
-                  alt={g.title || "Gallery image"}
-                  fill
-                  className="object-cover group-hover:scale-105 transition duration-500"
-                  unoptimized
-                />
-                {(g.title || g.category) && (
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition">
-                    {g.title && <p className="text-white text-sm font-semibold line-clamp-1">{g.title}</p>}
-                    {g.category && <p className="text-white/70 text-xs uppercase tracking-wider mt-0.5">{g.category}</p>}
-                  </div>
-                )}
+          <>
+            {categories.length > 0 && (
+              <div className="mb-10 flex flex-wrap gap-3">
+                {categories.map((c) => (
+                  <span
+                    key={c}
+                    className="rounded-full border border-border px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    {c}
+                  </span>
+                ))}
               </div>
-            ))}
-          </div>
+            )}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {items.map((g, i) => (
+                <Reveal key={g.id} delay={i * 40}>
+                  <figure className="group relative aspect-square overflow-hidden rounded-sm border border-border">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={g.image_url}
+                      alt={g.alt_text || g.title || "Gallery image"}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    {(g.title || g.category) && (
+                      <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-deep/95 to-transparent p-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                        {g.title && (
+                          <p className="line-clamp-1 font-display text-sm">{g.title}</p>
+                        )}
+                        {g.category && (
+                          <p className="mt-0.5 text-[0.65rem] uppercase tracking-[0.2em] text-primary">
+                            {g.category}
+                          </p>
+                        )}
+                      </figcaption>
+                    )}
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </>
         )}
-      </main>
-
-      <Footer settings={settings} />
-    </div>
+      </section>
+    </PublicShell>
   )
 }

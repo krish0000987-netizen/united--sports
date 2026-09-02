@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/ad
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createArticle, updateArticle, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createArticle, updateArticle, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { Article, ArticleCategory } from "@/lib/cms/types"
 
@@ -71,7 +71,7 @@ export function ArticleForm({ article, categories }: { article: Article | null; 
       }
       if (article) {
         payload.author_id = payload.author_id || article.author_id
-        const { data, error } = await updateArticle(article.id, payload)
+        const { error } = await updateArticle(article.id, payload)
         if (error) {
           toast.error(error)
           return

@@ -4,13 +4,13 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 
 interface EnquiryActionButtonsProps {
   id: string
   title: string
   viewHref: string
-  onDelete: () => Promise<{ error: string | null }>
+  onDelete: () => Promise<void>
 }
 
 export function EnquiryActionButtons({ id, title, viewHref, onDelete }: EnquiryActionButtonsProps) {
@@ -27,23 +27,22 @@ export function EnquiryActionButtons({ id, title, viewHref, onDelete }: EnquiryA
     })
     if (!ok) return
     setLoading(true)
-    const { error } = await onDelete()
-    setLoading(false)
-    if (error) {
-      toast.error(error)
-    } else {
-      const user = await getCurrentUser()
-      await createActivityLog({
-        admin_user_id: user?.id || null,
-        admin_email: user?.email || null,
-        action: "delete",
-        entity_type: "enquiry",
-        entity_id: id,
-        description: title,
-      })
-      toast.success("Enquiry deleted")
-      router.refresh()
+    try {
+      await onDelete()
+    } finally {
+      setLoading(false)
     }
+    const result = await getCurrentUser()
+    await createActivityLog({
+      admin_user_id: result?.id || null,
+      admin_email: result?.email || null,
+      action: "delete",
+      entity_type: "enquiry",
+      entity_id: id,
+      description: title,
+    })
+    toast.success("Enquiry deleted")
+    router.refresh()
   }
 
   return (

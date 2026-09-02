@@ -1,12 +1,12 @@
 "use client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Save, Loader2, X, ChevronDown, ChevronUp } from "lucide-react"
+import { Save, Loader2, ChevronDown, ChevronUp } from "lucide-react"
 import { Input, Textarea } from "@/components/ui/form"
-import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
+import { Card, CardBody, Badge } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { toast } from "@/components/ui/toast"
-import { updateHomepageSection, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { updateHomepageSection, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { HomepageSection } from "@/lib/cms/types"
 
 export function HomepageSectionsManager({ sections }: { sections: HomepageSection[] }) {

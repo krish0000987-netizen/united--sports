@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createProgramme, updateProgramme, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createProgramme, updateProgramme, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { Programme } from "@/lib/cms/types"
 

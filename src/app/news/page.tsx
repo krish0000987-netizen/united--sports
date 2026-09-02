@@ -1,77 +1,82 @@
-import Link from "next/link"
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
-import { getSiteSettingsServer, getArticlesServer } from "@/lib/cms/server"
-import { formatDate } from "@/lib/format"
-import Image from "next/image"
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
+import { getArticlesServer } from '@/lib/cms/server'
+import PublicShell from '@/components/site/PublicShell'
+import { PageHero } from '@/components/site/PageHero'
+import { Reveal } from '@/components/site/Reveal'
+import { formatDate } from '@/lib/format'
 
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic'
 
-export const metadata = {
-  title: "News & Articles | United Sports",
-  description: "Latest news, updates, and insights from United Sports.",
+export const metadata: Metadata = {
+  title: 'News & Updates',
+  description: 'The latest news, updates, and stories from the UnitedAthletes community.',
 }
 
 export default async function NewsPage() {
-  const [settings, articles] = await Promise.all([
-    getSiteSettingsServer(),
-    getArticlesServer({ status: "published" }),
-  ])
+  const articles = await getArticlesServer({ status: 'published' })
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header settings={settings} />
+    <PublicShell>
+      <PageHero
+        eyebrow="News"
+        title={<>Latest news & <span className="text-gold-gradient">updates</span></>}
+        subtitle="Stories, announcements and insights from the UnitedAthletes community."
+        image="/assets/support.jpg"
+        alt="Coach and athlete clasping hands"
+      />
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0B1D3A] via-[#0B1D3A] to-[#1a3a6b] text-white">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
-        <div className="relative max-w-[1280px] mx-auto px-4 py-20 md:py-28">
-          <p className="text-sm font-semibold text-[#C9A227] uppercase tracking-wider">Stay Updated</p>
-          <h1 className="text-4xl md:text-5xl font-bold mt-2">News & Articles</h1>
-          <p className="mt-4 text-white/80 text-lg max-w-2xl">
-            The latest news, updates, and insights from United Sports.
-          </p>
-        </div>
-      </section>
-
-      <main className="flex-1 max-w-[1280px] mx-auto px-4 py-12 w-full">
+      <section className="mx-auto max-w-7xl px-5 py-24">
         {articles.length === 0 ? (
-          <div className="text-center py-20 text-slate-500">
-            <p className="text-lg">No articles published yet.</p>
-          </div>
+          <p className="py-20 text-center text-muted-foreground">
+            No articles available yet. Check back soon!
+          </p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((a) => (
-              <Link
-                key={a.id}
-                href={`/news/${a.slug}`}
-                className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all"
-              >
-                {a.featured_image && (
-                  <div className="relative aspect-video bg-slate-100">
-                    <Image
-                      src={a.featured_image}
-                      alt={a.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition duration-500"
-                      unoptimized
-                    />
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article, i) => (
+              <Reveal key={article.id} delay={i * 90}>
+                <Link
+                  href={`/news/${article.slug}`}
+                  className="surface-card group flex h-full flex-col overflow-hidden rounded-sm transition-transform duration-500 hover:-translate-y-2"
+                >
+                  {article.featured_image && (
+                    <div className="relative h-48 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={article.featured_image}
+                        alt={article.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-1 flex-col p-7">
+                    <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                      {article.category?.name || 'News'}
+                      {article.published_at && (
+                        <span className="ml-3">{formatDate(article.published_at)}</span>
+                      )}
+                    </span>
+                    <h2 className="mt-4 text-2xl leading-tight group-hover:text-primary">
+                      {article.title}
+                    </h2>
+                    {article.excerpt && (
+                      <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                        {article.excerpt}
+                      </p>
+                    )}
+                    <span className="mt-auto inline-flex items-center gap-2 pt-6 text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
+                      Read story
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </span>
                   </div>
-                )}
-                <div className="p-5">
-                  <div className="text-xs font-semibold text-[#C9A227]">
-                    {a.published_at ? formatDate(a.published_at) : formatDate(a.created_at)}
-                    {a.category?.name && <span className="text-slate-500 font-normal"> • {a.category.name}</span>}
-                  </div>
-                  <h3 className="font-semibold text-[#0B1D3A] mt-2 line-clamp-2">{a.title}</h3>
-                  {a.excerpt && <p className="text-sm text-slate-500 mt-2 line-clamp-3">{a.excerpt}</p>}
-                </div>
-              </Link>
+                </Link>
+              </Reveal>
             ))}
           </div>
         )}
-      </main>
-
-      <Footer settings={settings} />
-    </div>
+      </section>
+    </PublicShell>
   )
 }

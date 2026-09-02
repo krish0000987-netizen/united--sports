@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createGalleryItem, updateGalleryItem, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createGalleryItem, updateGalleryItem, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { GalleryItem } from "@/lib/cms/types"
 
@@ -20,7 +20,7 @@ export function GalleryForm({ item }: { item: GalleryItem | null }) {
     image_url: item?.image_url || "",
     description: item?.description || "",
     category: item?.category || "",
-    status: item?.status || "active",
+    status: item?.status || "published",
     display_order: item?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -167,7 +167,7 @@ export function GalleryForm({ item }: { item: GalleryItem | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "active", label: "Active" },
+                  { value: "published", label: "Published" },
                   { value: "archived", label: "Archived" },
                 ]}
               />

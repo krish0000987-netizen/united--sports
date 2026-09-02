@@ -1,13 +1,13 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Save, Eye, Send } from "lucide-react"
+import { Save, Eye } from "lucide-react"
 import { Input, Textarea, Select } from "@/components/ui/form"
-import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
+import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createEvent, updateEvent, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createEvent, updateEvent, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { Event } from "@/lib/cms/types"
 
@@ -24,7 +24,7 @@ export function EventForm({ event }: { event: Event | null }) {
     location: event?.location || "",
     featured_image: event?.featured_image || null,
     registration_url: event?.registration_url || "",
-    status: event?.status || "upcoming",
+    status: event?.status || "published",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -153,10 +153,9 @@ export function EventForm({ event }: { event: Event | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "upcoming", label: "Upcoming" },
-                  { value: "live", label: "Live" },
-                  { value: "completed", label: "Completed" },
-                  { value: "cancelled", label: "Cancelled" },
+                  { value: "draft", label: "Draft" },
+                  { value: "published", label: "Published" },
+                  { value: "archived", label: "Archived" },
                 ]}
               />
             </CardBody>

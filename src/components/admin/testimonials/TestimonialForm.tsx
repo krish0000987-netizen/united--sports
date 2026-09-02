@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createTestimonial, updateTestimonial, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createTestimonial, updateTestimonial, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { Testimonial } from "@/lib/cms/types"
 
@@ -20,7 +20,7 @@ export function TestimonialForm({ testimonial }: { testimonial: Testimonial | nu
     role: testimonial?.role || "",
     photo: testimonial?.photo || null,
     quote: testimonial?.quote || "",
-    status: testimonial?.status || "active",
+    status: testimonial?.status || "published",
     display_order: testimonial?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -155,7 +155,7 @@ export function TestimonialForm({ testimonial }: { testimonial: Testimonial | nu
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "active", label: "Active" },
+                  { value: "published", label: "Published" },
                   { value: "archived", label: "Archived" },
                 ]}
               />

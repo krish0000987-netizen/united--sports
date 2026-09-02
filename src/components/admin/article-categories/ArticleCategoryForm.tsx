@@ -6,7 +6,7 @@ import { Input, Textarea } from "@/components/ui/form"
 import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { toast } from "@/components/ui/toast"
-import { createArticleCategory, updateArticleCategory, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createArticleCategory, updateArticleCategory, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { ArticleCategory } from "@/lib/cms/types"
 

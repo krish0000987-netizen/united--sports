@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/ad
 import { Button } from "@/components/admin/Button"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { createNavigationItem, updateNavigationItem, deleteNavigationItem, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createNavigationItem, updateNavigationItem, deleteNavigationItem, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { NavigationItem } from "@/lib/cms/types"
 
 export function NavigationManager({ items }: { items: NavigationItem[] }) {
@@ -21,8 +21,9 @@ export function NavigationManager({ items }: { items: NavigationItem[] }) {
     setBusy(item.id)
     const { error } = await updateNavigationItem(item.id, { is_active: !item.is_active })
     setBusy(null)
-    if (error) toast.error(error)
-    else {
+    if (error) {
+      toast.error(error)
+    } else {
       toast.success(`Item ${item.is_active ? "deactivated" : "activated"}`)
       router.refresh()
     }

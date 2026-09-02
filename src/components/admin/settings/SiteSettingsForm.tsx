@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { updateSiteSettings, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { updateSiteSettings, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { SiteSettings } from "@/lib/cms/types"
 
 export function SiteSettingsForm({ settings }: { settings: SiteSettings }) {
@@ -57,9 +57,9 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettings }) {
         primary_color: form.primary_color || null,
         secondary_color: form.secondary_color || null,
       }
-      const { error } = await updateSiteSettings(settings.id, payload)
-      if (error) {
-        toast.error(error)
+      const result = await updateSiteSettings(payload)
+      if (result.error) {
+        toast.error(result.error)
         return
       }
       const user = await getCurrentUser()
@@ -72,8 +72,8 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettings }) {
         description: form.site_name,
       })
       toast.success("Site settings updated")
-    } catch (err) {
-      toast.error("Failed to update site settings")
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to update site settings")
     } finally {
       setSaving(false)
     }

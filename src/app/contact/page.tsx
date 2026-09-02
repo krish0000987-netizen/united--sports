@@ -1,108 +1,104 @@
-import { Header } from "@/components/layout/Header"
-import { Footer } from "@/components/layout/Footer"
+import { MapPin, Phone } from "lucide-react"
+
 import { getSiteSettingsServer } from "@/lib/cms/server"
+import PublicShell from "@/components/site/PublicShell"
+import { PageHero } from "@/components/site/PageHero"
+import { Reveal } from "@/components/site/Reveal"
 import { ContactForm } from "./ContactForm"
-import { Mail, Phone, MapPin, MessageCircle } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
 export const metadata = {
-  title: "Contact | United Sports",
-  description: "Get in touch with United Sports. We'd love to hear from you.",
+  title: "Contact",
+  description: "Reach UnitedAthletes for India Foundation — athletes, coaches, organisations and supporters, we'd love to hear from you.",
 }
 
 export default async function ContactPage() {
   const settings = await getSiteSettingsServer()
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header settings={settings} />
+    <PublicShell>
+      <PageHero
+        eyebrow="Contact"
+        title={<>Let&apos;s <span className="text-gold-gradient">talk sport</span></>}
+        subtitle="Athletes, coaches, organisations and supporters — we'd love to hear from you."
+        image="/assets/facility.jpg"
+        alt="Modern indoor sports arena lit at night"
+      />
 
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0B1D3A] via-[#0B1D3A] to-[#1a3a6b] text-white">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
-        <div className="relative max-w-[1280px] mx-auto px-4 py-20 md:py-28">
-          <p className="text-sm font-semibold text-[#C9A227] uppercase tracking-wider">Get In Touch</p>
-          <h1 className="text-4xl md:text-5xl font-bold mt-2">Contact Us</h1>
-          <p className="mt-4 text-white/80 text-lg max-w-2xl">
-            Have a question or want to learn more? We&apos;d love to hear from you.
-          </p>
+      <section className="mx-auto max-w-7xl px-5 py-24">
+        <div className="grid gap-14 lg:grid-cols-[1fr_1fr]">
+          <Reveal>
+            <p className="eyebrow">Contact Us</p>
+            <div className="rule-gold mt-4" />
+            <h2 className="mt-6 text-4xl sm:text-5xl">
+              {settings?.site_name || "UnitedAthletes for India Foundation"}
+            </h2>
+            <ul className="mt-10 space-y-6">
+              {settings?.phone && (
+                <li className="flex gap-4">
+                  <Phone className="mt-1 h-5 w-5 shrink-0 text-primary" />
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                      Phone & WhatsApp
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <a
+                        href={`tel:${settings.phone.replace(/[^0-9+]/g, "")}`}
+                        className="text-lg hover:text-primary"
+                      >
+                        {settings.phone}
+                      </a>
+                      {settings.whatsapp && (
+                        <a
+                          href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hello UnitedAthletes Foundation!")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-[#25D366]/20 px-3 py-1 text-xs font-extrabold text-[#25D366] transition-colors hover:bg-[#25D366] hover:text-white"
+                        >
+                          Chat on WhatsApp
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              )}
+              {settings?.address && (
+                <li className="flex gap-4">
+                  <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" />
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                      Address
+                    </p>
+                    <p className="max-w-sm text-lg leading-relaxed">
+                      {settings.address}
+                    </p>
+                  </div>
+                </li>
+              )}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <ContactForm />
+          </Reveal>
         </div>
       </section>
 
-      <main className="flex-1 max-w-[1280px] mx-auto px-4 py-12 w-full">
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
-          {settings?.email && (
-            <InfoCard
-              icon={<Mail size={20} />}
-              label="Email"
-              value={settings.email}
-              href={`mailto:${settings.email}`}
-            />
-          )}
-          {settings?.phone && (
-            <InfoCard
-              icon={<Phone size={20} />}
-              label="Phone"
-              value={settings.phone}
-              href={`tel:${settings.phone}`}
-            />
-          )}
-          {settings?.whatsapp && (
-            <InfoCard
-              icon={<MessageCircle size={20} />}
-              label="WhatsApp"
-              value={settings.whatsapp}
-              href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}`}
-              external
-            />
-          )}
-          {settings?.address && (
-            <div className="bg-white border border-slate-200 rounded-2xl p-5">
-              <div className="h-10 w-10 rounded-full bg-[#0B1D3A]/10 text-[#0B1D3A] grid place-items-center mb-3">
-                <MapPin size={20} />
-              </div>
-              <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">Address</p>
-              <p className="text-sm text-slate-800 mt-1 whitespace-pre-wrap">{settings.address}</p>
-            </div>
-          )}
+      <section className="border-t border-border bg-navy">
+        <div className="mx-auto max-w-4xl px-5 py-24 text-center">
+          <Reveal>
+            <h2 className="text-4xl sm:text-5xl">
+              Together, we can build a{" "}
+              <span className="text-gold-gradient">stronger sporting India.</span>
+            </h2>
+            <p className="mt-8 font-display text-2xl">UnitedAthletes</p>
+            <p className="mt-2 text-sm uppercase tracking-[0.28em] text-primary">
+              Empowering Athletes. Enabling Dreams.
+            </p>
+          </Reveal>
         </div>
-
-        <div className="max-w-3xl">
-          <h2 className="text-2xl font-bold text-[#0B1D3A] mb-6">Send us a message</h2>
-          <ContactForm />
-        </div>
-      </main>
-
-      <Footer settings={settings} />
-    </div>
-  )
-}
-
-function InfoCard({
-  icon,
-  label,
-  value,
-  href,
-  external = false,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: string
-  href: string
-  external?: boolean
-}) {
-  return (
-    <a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      className="block bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-md hover:-translate-y-0.5 transition"
-    >
-      <div className="h-10 w-10 rounded-full bg-[#0B1D3A]/10 text-[#0B1D3A] grid place-items-center mb-3">
-        {icon}
-      </div>
-      <p className="text-xs uppercase tracking-wider text-slate-500 font-semibold">{label}</p>
-      <p className="text-sm text-slate-800 mt-1 break-all">{value}</p>
-    </a>
+      </section>
+    </PublicShell>
   )
 }

@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
 import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
-import { createAthlete, updateAthlete, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createAthlete, updateAthlete, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { slugify } from "@/lib/utils"
 import { Athlete } from "@/lib/cms/types"
 
@@ -23,7 +23,7 @@ export function AthleteForm({ athlete }: { athlete: Athlete | null }) {
     biography: athlete?.biography || "",
     achievements: athlete?.achievements || "",
     photo: athlete?.photo || null,
-    status: athlete?.status || "active",
+    status: athlete?.status || "published",
     display_order: athlete?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -102,7 +102,7 @@ export function AthleteForm({ athlete }: { athlete: Athlete | null }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-end gap-2 sticky top-14 lg:top-0 bg-slate-50 py-3 z-10 -mt-3">
-        {athlete && athlete.status === "active" && (
+        {athlete && athlete.status === "published" && (
           <Button asChild href={`/athletes/${athlete.slug}`} variant="outline">
             <Eye size={14} /> Preview
           </Button>
@@ -143,9 +143,9 @@ export function AthleteForm({ athlete }: { athlete: Athlete | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "active", label: "Active" },
-                  { value: "inactive", label: "Inactive" },
-                  { value: "retired", label: "Retired" },
+                  { value: "published", label: "Published" },
+                  { value: "draft", label: "Draft" },
+                  { value: "archived", label: "Archived" },
                 ]}
               />
               <Input

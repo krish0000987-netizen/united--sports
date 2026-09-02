@@ -3,11 +3,10 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Trash2, Loader2, Image as ImageIcon } from "lucide-react"
 import { Card } from "@/components/ui/admin"
-import { Button } from "@/components/admin/Button"
 import { AddButton } from "@/components/admin/PageHeader"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { deleteGalleryItem, createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { deleteGalleryItem, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 import { GalleryItem } from "@/lib/cms/types"
 import Link from "next/link"
 
@@ -25,11 +24,10 @@ export function MediaGrid({ items }: { items: GalleryItem[] }) {
     })
     if (!ok) return
     setBusy(item.id)
-    const { error } = await deleteGalleryItem(item.id)
-    setBusy(null)
-    if (error) {
-      toast.error(error)
-      return
+    try {
+      await deleteGalleryItem(item.id)
+    } finally {
+      setBusy(null)
     }
     const user = await getCurrentUser()
     await createActivityLog({
@@ -65,6 +63,7 @@ export function MediaGrid({ items }: { items: GalleryItem[] }) {
         {items.map((item) => (
           <div key={item.id} className="group relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
             <div className="relative aspect-square">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={item.image_url}
                 alt={item.title || "Media"}

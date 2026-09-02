@@ -1,6 +1,6 @@
-import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { AdminProfile, AdminRole } from "@/lib/cms/types"
+import { createClient } from "@/lib/supabase/server"
+import { AdminProfile } from "@/lib/cms/types"
 
 export interface ServerAuthUser {
   id: string
@@ -10,7 +10,6 @@ export interface ServerAuthUser {
 
 export async function getServerUser(): Promise<ServerAuthUser | null> {
   const c = await createClient()
-  if (!c) return null
   const { data: { user } } = await c.auth.getUser()
   if (!user) return null
 
@@ -29,14 +28,12 @@ export async function getServerUser(): Promise<ServerAuthUser | null> {
 
 export async function requireAdmin(): Promise<ServerAuthUser> {
   const user = await getServerUser()
-  if (!user) {
-    redirect("/login")
-  }
+  if (!user) redirect("/admin/login")
   if (!user.profile || !user.profile.is_active) {
-    redirect("/login?error=inactive")
+    redirect("/admin/login?error=inactive")
   }
   if (!["super_admin", "admin", "editor"].includes(user.profile.role)) {
-    redirect("/login?error=unauthorized")
+    redirect("/admin/login?error=unauthorized")
   }
   return user
 }

@@ -4,14 +4,14 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { createActivityLog, getCurrentUser } from "@/lib/cms/data"
+import { createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 
 interface ActionButtonsProps {
   id: string
   title: string
   editHref: string
   viewHref?: string | null
-  onDelete: () => Promise<{ error: string | null }>
+  onDelete: () => Promise<{ error: string | null } | void>
   entityType: string
 }
 
@@ -29,11 +29,13 @@ export function ActionButtons({ id, title, editHref, viewHref, onDelete, entityT
     })
     if (!ok) return
     setLoading(true)
-    const { error } = await onDelete()
-    setLoading(false)
-    if (error) {
-      toast.error(error)
-    } else {
+    try {
+      const result = await onDelete()
+      const error = result && typeof result === "object" && "error" in result ? result.error : null
+      if (error) {
+        toast.error(error)
+        return
+      }
       const user = await getCurrentUser()
       await createActivityLog({
         admin_user_id: user?.id || null,
@@ -45,6 +47,10 @@ export function ActionButtons({ id, title, editHref, viewHref, onDelete, entityT
       })
       toast.success(`${entityType} deleted`)
       router.refresh()
+    } catch {
+      toast.error(`Failed to delete ${entityType}`)
+    } finally {
+      setLoading(false)
     }
   }
 

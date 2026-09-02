@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/client"
-import { AdminProfile, AdminRole } from "@/lib/cms/types"
+import { AdminProfile } from "@/lib/cms/types"
+
+export type AdminRole = "super_admin" | "admin" | "editor"
 
 export interface AuthUser {
   id: string
@@ -9,7 +11,6 @@ export interface AuthUser {
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
   const c = createClient()
-  if (!c) return null
   const { data: { user } } = await c.auth.getUser()
   if (!user) return null
 
@@ -46,13 +47,11 @@ export async function hasRole(roles: AdminRole[]): Promise<boolean> {
 
 export async function signOut(): Promise<void> {
   const c = createClient()
-  if (!c) return
   await c.auth.signOut()
 }
 
 export async function signIn(email: string, password: string): Promise<{ error: string | null }> {
   const c = createClient()
-  if (!c) return { error: "Supabase not configured" }
   const { error } = await c.auth.signInWithPassword({ email, password })
   return { error: error?.message || null }
 }
