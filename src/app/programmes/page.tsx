@@ -71,6 +71,35 @@ export default async function ProgrammesPage() {
           </div>
         )}
       </section>
+
+      <section className="border-y border-border bg-navy">
+        <div className="mx-auto max-w-7xl px-5 py-24">
+          <Reveal>
+            <p className="eyebrow">Our Approach</p>
+            <div className="rule-gold mt-4" />
+            <h2 className="mt-6 max-w-3xl text-4xl sm:text-5xl">
+              An athlete-first path from ambition to achievement
+            </h2>
+          </Reveal>
+          <ol className="mt-14 grid gap-px overflow-hidden rounded-sm border border-border bg-border sm:grid-cols-2 lg:grid-cols-6">
+            {["Discover", "Support", "Equip", "Develop", "Connect", "Empower"].map((step, i) => (
+              <Reveal key={step} delay={i * 90}>
+                <div className="h-full bg-navy-deep p-7">
+                  <span className="font-display text-xs tracking-[0.3em] text-primary">
+                    Step {i + 1}
+                  </span>
+                  <p className="mt-4 font-display text-2xl">{step}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
+          <Reveal delay={200}>
+            <p className="mt-10 max-w-2xl leading-relaxed text-muted-foreground">
+              Our objective is to make the journey from sporting ambition to achievement more accessible.
+            </p>
+          </Reveal>
+        </div>
+      </section>
     </PublicShell>
   )
 }

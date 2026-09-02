@@ -70,15 +70,38 @@ export default async function HomePage() {
               <h1 className="mt-6 max-w-4xl text-5xl leading-[0.95] sm:text-6xl lg:text-7xl">
                 {hero.heading}
               </h1>
-              {hero.button_text && hero.button_url && (
+              <div className="mt-10 flex flex-wrap gap-4">
+                {hero.button_text && hero.button_url && (
+                  <Link
+                    href={hero.button_url}
+                    className="group inline-flex items-center gap-3 rounded-sm bg-primary px-8 py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary-foreground transition-transform duration-300 hover:-translate-y-1"
+                  >
+                    {hero.button_text}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                )}
                 <Link
-                  href={hero.button_url}
-                  className="group mt-10 inline-flex items-center gap-3 rounded-sm bg-primary px-8 py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary-foreground transition-transform duration-300 hover:-translate-y-1"
+                  href="/programmes"
+                  className="inline-flex items-center gap-3 rounded-sm border border-primary/50 px-8 py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:bg-primary/10"
                 >
-                  {hero.button_text}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  Explore Opportunities
                 </Link>
-              )}
+              </div>
+
+              <dl className="mt-16 grid max-w-2xl grid-cols-3 gap-6 border-t border-border pt-8">
+                {[
+                  { k: "14+", v: "Sporting disciplines" },
+                  { k: "6", v: "Core programmes" },
+                  { k: "1", v: "Athlete-first promise" },
+                ].map((s) => (
+                  <div key={s.v}>
+                    <dt className="font-display text-4xl text-primary">{s.k}</dt>
+                    <dd className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                      {s.v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </Reveal>
           </div>
         </section>
@@ -353,6 +376,82 @@ export default async function HomePage() {
                       ))}
                     </div>
                   )}
+                </div>
+              </section>
+            )
+
+          case 'focus':
+            return (
+              <section key={section.id} className="mx-auto max-w-7xl px-5 py-24">
+                <Reveal>
+                  <p className="eyebrow">{section.subtitle || 'Our Focus'}</p>
+                  <div className="rule-gold mt-4" />
+                  <h2 className="mt-6 max-w-2xl text-4xl sm:text-5xl">{section.title || 'Four pillars, one athlete'}</h2>
+                </Reveal>
+                <div className="mt-14 grid gap-8 md:grid-cols-2">
+                  {[
+                    { n: "01", title: "Athletes", text: "Supporting athletes in their journey from potential to performance.", img: "/assets/para-athlete.jpg", alt: "Indian para-athlete racing on a track" },
+                    { n: "02", title: "Facilities", text: "Helping athletes access quality sports infrastructure and training environments.", img: "/assets/facility.jpg", alt: "Modern indoor sports arena" },
+                    { n: "03", title: "Equipment", text: "Providing access to essential sports equipment and resources.", img: "/assets/equipment.jpg", alt: "Sports equipment" },
+                    { n: "04", title: "Opportunities", text: "Creating pathways for athletes to showcase talent and pursue their goals.", img: "/assets/community.jpg", alt: "Athletes in a huddle" },
+                  ].map((f, i) => (
+                    <Reveal key={f.title} delay={i * 100}>
+                      <article className="group relative h-[26rem] overflow-hidden rounded-sm border border-border">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={f.img}
+                          alt={f.alt}
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-[1200ms] group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/70 to-transparent" />
+                        <div className="relative flex h-full flex-col justify-end p-8">
+                          <span className="font-display text-sm tracking-[0.3em] text-primary">
+                            {f.n}
+                          </span>
+                          <h3 className="mt-3 text-3xl">{f.title}</h3>
+                          <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                            {f.text}
+                          </p>
+                        </div>
+                      </article>
+                    </Reveal>
+                  ))}
+                </div>
+              </section>
+            )
+
+          case 'sports_marquee':
+          case 'marquee':
+            return (
+              <section key={section.id} className="overflow-hidden border-y border-border bg-navy py-20">
+                <div className="mx-auto max-w-7xl px-5">
+                  <Reveal>
+                    <p className="eyebrow">{section.subtitle || 'Sports'}</p>
+                    <div className="rule-gold mt-4" />
+                    <p className="mt-6 max-w-2xl leading-relaxed text-muted-foreground">
+                      {section.description || 'UnitedAthletes supports athletes across multiple sporting disciplines and creates opportunities from diverse backgrounds.'}
+                    </p>
+                  </Reveal>
+                </div>
+                <div className="mt-12 flex w-max marquee-track">
+                  {[0, 1].map((dup) => (
+                    <ul key={dup} className="flex items-center" aria-hidden={dup === 1}>
+                      {[
+                        "Cricket", "Football", "Badminton", "Tennis", "Athletics", "Swimming",
+                        "Archery", "Basketball", "Hockey", "Wrestling", "Boxing", "Volleyball",
+                        "Para-Sports", "And More",
+                      ].map((s) => (
+                        <li
+                          key={`${dup}-${s}`}
+                          className="flex items-center gap-8 whitespace-nowrap px-8 font-display text-3xl text-foreground/70 sm:text-5xl"
+                        >
+                          {s}
+                          <span className="h-2 w-2 rotate-45 bg-primary" />
+                        </li>
+                      ))}
+                    </ul>
+                  ))}
                 </div>
               </section>
             )
