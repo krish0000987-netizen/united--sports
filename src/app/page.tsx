@@ -48,33 +48,38 @@ export default async function HomePage() {
     <PublicShell>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       {hero && (
-        <section className="grain relative flex min-h-[92vh] items-center overflow-hidden">
-          {hero.background_image && (
+        <section className="grain relative flex min-h-[85vh] sm:min-h-[92vh] items-center overflow-hidden bg-navy-deep">
+          {hero.background_image ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={hero.background_image}
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover object-center"
               />
               <div
-                className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/40"
-                style={{ opacity: hero.overlay_opacity ?? 0.5 }}
+                className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/40"
+                style={{ opacity: hero.overlay_opacity ?? 0.6 }}
               />
             </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-navy via-background to-navy-deep opacity-90" />
           )}
-          <div className="relative mx-auto w-full max-w-7xl px-5 pt-28">
-            <Reveal>
+          <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 sm:pb-16">
+            <div>
               <p className="eyebrow">{hero.subheading || 'UnitedAthletes for India Foundation'}</p>
-              <div className="rule-gold mt-4" />
-              <h1 className="mt-6 max-w-4xl text-5xl leading-[0.95] sm:text-6xl lg:text-7xl">
+              <div className="rule-gold mt-3 sm:mt-4" />
+              <h1 className="mt-4 sm:mt-6 max-w-4xl text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] sm:leading-[0.95] tracking-tight">
                 {hero.heading}
               </h1>
-              <div className="mt-10 flex flex-wrap gap-4">
+              <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 w-full sm:w-auto">
                 {hero.button_text && hero.button_url && (
                   <Link
                     href={hero.button_url}
-                    className="group inline-flex items-center gap-3 rounded-sm bg-primary px-8 py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary-foreground transition-transform duration-300 hover:-translate-y-1"
+                    className="group inline-flex items-center justify-center gap-3 rounded-sm bg-primary px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary-foreground transition-transform duration-300 hover:-translate-y-1 text-center"
                   >
                     {hero.button_text}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -82,27 +87,27 @@ export default async function HomePage() {
                 )}
                 <Link
                   href="/programmes"
-                  className="inline-flex items-center gap-3 rounded-sm border border-primary/50 px-8 py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:bg-primary/10"
+                  className="inline-flex items-center justify-center gap-3 rounded-sm border border-primary/50 px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:bg-primary/10 text-center"
                 >
                   Explore Opportunities
                 </Link>
               </div>
 
-              <dl className="mt-16 grid max-w-2xl grid-cols-3 gap-6 border-t border-border pt-8">
+              <dl className="mt-12 sm:mt-16 grid max-w-2xl grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 border-t border-border pt-6 sm:pt-8">
                 {[
                   { k: "14+", v: "Sporting disciplines" },
                   { k: "6", v: "Core programmes" },
                   { k: "1", v: "Athlete-first promise" },
                 ].map((s) => (
                   <div key={s.v}>
-                    <dt className="font-display text-4xl text-primary">{s.k}</dt>
-                    <dd className="mt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <dt className="font-display text-3xl sm:text-4xl text-primary">{s.k}</dt>
+                    <dd className="mt-1 sm:mt-2 text-[0.7rem] sm:text-xs uppercase tracking-[0.18em] text-muted-foreground">
                       {s.v}
                     </dd>
                   </div>
                 ))}
               </dl>
-            </Reveal>
+            </div>
           </div>
         </section>
       )}

@@ -21,6 +21,14 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current
     if (!el) return
+
+    // If element is already in viewport on mount, show immediately
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      setShown(true)
+      return
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -30,7 +38,7 @@ export function Reveal({
           }
         })
       },
-      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" },
+      { threshold: 0.05, rootMargin: "0px 0px 80px 0px" },
     )
     io.observe(el)
     return () => io.disconnect()
