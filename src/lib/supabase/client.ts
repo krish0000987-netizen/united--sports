@@ -1,7 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr'
 
-const DEFAULT_SUPABASE_URL = "https://lyxqlmmzjzkcjzcnbusp.supabase.co"
-const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_NrkpgMB9uKvSycCClY3ayQ_7N0UOGgI"
+const DEFAULT_SUPABASE_URL = "https://ulrltmnzwemjdrcmssej.supabase.co"
+const DEFAULT_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVscmx0bW56d2VtamRyY21zc2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMjE5OTksImV4cCI6MjEwMzY5Nzk5OX0.wKyeyzp5Ti0oxyACuaKMaDffpspxby_FhxdcegvnLHg"
 
 export function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL

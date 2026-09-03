@@ -2,8 +2,8 @@ import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { createClient as createRawClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const DEFAULT_SUPABASE_URL = "https://lyxqlmmzjzkcjzcnbusp.supabase.co"
-const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_NrkpgMB9uKvSycCClY3ayQ_7N0UOGgI"
+const DEFAULT_SUPABASE_URL = "https://ulrltmnzwemjdrcmssej.supabase.co"
+const DEFAULT_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVscmx0bW56d2VtamRyY21zc2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxMjE5OTksImV4cCI6MjEwMzY5Nzk5OX0.wKyeyzp5Ti0oxyACuaKMaDffpspxby_FhxdcegvnLHg"
 
 /**
  * Server-side Supabase clients.

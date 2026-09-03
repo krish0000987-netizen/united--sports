@@ -5,9 +5,7 @@ import { Upload, X, Loader2, ImageIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "@/components/ui/toast"
 
-const API_BASE = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? "/api/upload"
-  : null
+const API_BASE = "/api/upload"
 
 /** Extract the storage path from a public media URL (or return null for external URLs). */
 function extractPath(url: string | null): string | null {
