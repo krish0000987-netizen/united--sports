@@ -56,7 +56,7 @@ export const DEFAULT_HOMEPAGE_HERO: HomepageHero = {
   subheading: "UnitedAthletes for India Foundation",
   button_text: "Explore Programmes",
   button_url: "/programmes",
-  background_image: "/assets/texture-navy.jpg",
+  background_image: "/assets/hero-athletes.jpg",
   overlay_opacity: 0.6,
   is_enabled: true,
   display_order: 1,

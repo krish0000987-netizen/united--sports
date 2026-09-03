@@ -49,25 +49,19 @@ export default async function HomePage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       {hero && (
         <section className="grain relative flex min-h-[85vh] sm:min-h-[92vh] items-center overflow-hidden bg-navy-deep">
-          {hero.background_image ? (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={hero.background_image}
-                alt=""
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover object-center"
-              />
-              <div
-                className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/40"
-                style={{ opacity: hero.overlay_opacity ?? 0.6 }}
-              />
-            </>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-navy via-background to-navy-deep opacity-90" />
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={hero.background_image || "/assets/hero-athletes.jpg"}
+            alt=""
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/40"
+            style={{ opacity: hero.overlay_opacity ?? 0.6 }}
+          />
           <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-12 sm:pb-16">
             <div>
               <p className="eyebrow">{hero.subheading || 'UnitedAthletes for India Foundation'}</p>

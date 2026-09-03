@@ -27,6 +27,8 @@ export function SiteHeader({
 
   const phone = settings?.phone || ""
 
+  const logo = settings?.logo_url || "/assets/logo-circle.png"
+
   return (
     <header
       className={cn(
@@ -36,22 +38,19 @@ export function SiteHeader({
           : "bg-transparent py-4",
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          {settings?.logo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={settings.logo_url}
-              alt={`${settings?.site_name || "UnitedAthletes"} emblem`}
-              width={44}
-              height={44}
-              className="h-11 w-11 rounded-full object-contain ring-1 ring-primary/40"
-            />
-          ) : (
-            <div className="grid h-11 w-11 place-items-center rounded-full bg-primary font-display text-lg text-primary-foreground ring-1 ring-primary/40">
-              U
-            </div>
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={logo}
+            alt={`${settings?.site_name || "UnitedAthletes"} emblem`}
+            width={44}
+            height={44}
+            className="h-11 w-11 rounded-full object-cover ring-1 ring-primary/40 bg-white/5"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/assets/logo-circle.png"
+            }}
+          />
           <span className="leading-none">
             <span className="block font-display text-lg tracking-wide">
               United<span className="text-primary">Athletes</span>
