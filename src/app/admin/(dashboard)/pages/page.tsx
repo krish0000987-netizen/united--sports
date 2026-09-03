@@ -58,7 +58,6 @@ export default async function PagesPage() {
                       editHref={`/admin/pages/${p.id}`}
                       viewHref={p.status === "published" ? `/${p.slug}` : null}
                       entityType="page"
-                      onDelete={async () => { await deletePage(p.id) }}
                     />
                   </TD>
                 </TR>

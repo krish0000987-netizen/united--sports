@@ -4,13 +4,13 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
+import { createActivityLog, getCurrentUser, deleteEnquiry } from "@/lib/cms/client-actions"
 
 interface EnquiryActionButtonsProps {
   id: string
   title: string
   viewHref: string
-  onDelete: () => Promise<void>
+  onDelete?: () => Promise<void>
 }
 
 export function EnquiryActionButtons({ id, title, viewHref, onDelete }: EnquiryActionButtonsProps) {
@@ -28,7 +28,15 @@ export function EnquiryActionButtons({ id, title, viewHref, onDelete }: EnquiryA
     if (!ok) return
     setLoading(true)
     try {
-      await onDelete()
+      if (onDelete) {
+        await onDelete()
+      } else {
+        const { error } = await deleteEnquiry(id)
+        if (error) {
+          toast.error(error)
+          return
+        }
+      }
     } finally {
       setLoading(false)
     }

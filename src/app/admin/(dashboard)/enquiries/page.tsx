@@ -57,7 +57,6 @@ export default async function EnquiriesPage() {
                       id={e.id}
                       title={e.name}
                       viewHref={`/admin/enquiries/${e.id}`}
-                      onDelete={async () => { await deleteEnquiry(e.id) }}
                     />
                   </TD>
                 </TR>

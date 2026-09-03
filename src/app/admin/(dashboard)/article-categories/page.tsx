@@ -50,7 +50,6 @@ export default async function ArticleCategoriesPage() {
                       title={c.name}
                       editHref={`/admin/article-categories/${c.id}`}
                       entityType="article category"
-                      onDelete={async () => { await deleteArticleCategory(c.id) }}
                     />
                   </TD>
                 </TR>

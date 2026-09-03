@@ -4,15 +4,55 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useConfirm } from "@/components/admin/ConfirmDialog"
 import { toast } from "@/components/ui/toast"
-import { createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
+import {
+  deleteArticle,
+  deleteCategory,
+  deleteEvent,
+  deleteProgramme,
+  deleteAthlete,
+  deleteTeam,
+  deleteTestimonial,
+  deleteGalleryItem,
+  deleteCmsPage,
+  createActivityLog,
+  getCurrentUser,
+} from "@/lib/cms/client-actions"
 
 interface ActionButtonsProps {
   id: string
   title: string
   editHref: string
   viewHref?: string | null
-  onDelete: () => Promise<{ error: string | null } | void>
+  onDelete?: () => Promise<{ error: string | null } | void>
   entityType: string
+}
+
+async function performDelete(entityType: string, id: string): Promise<{ error: string | null }> {
+  switch (entityType.toLowerCase()) {
+    case "page":
+      return deleteCmsPage(id)
+    case "programme":
+    case "program":
+      return deleteProgramme(id)
+    case "event":
+      return deleteEvent(id)
+    case "athlete":
+      return deleteAthlete(id)
+    case "team":
+      return deleteTeam(id)
+    case "article":
+      return deleteArticle(id)
+    case "category":
+    case "article-category":
+      return deleteCategory(id)
+    case "gallery":
+    case "gallery item":
+      return deleteGalleryItem(id)
+    case "testimonial":
+      return deleteTestimonial(id)
+    default:
+      return { error: `Unsupported entity type: ${entityType}` }
+  }
 }
 
 export function ActionButtons({ id, title, editHref, viewHref, onDelete, entityType }: ActionButtonsProps) {
@@ -30,8 +70,14 @@ export function ActionButtons({ id, title, editHref, viewHref, onDelete, entityT
     if (!ok) return
     setLoading(true)
     try {
-      const result = await onDelete()
-      const error = result && typeof result === "object" && "error" in result ? result.error : null
+      let error: string | null = null
+      if (onDelete) {
+        const result = await onDelete()
+        error = result && typeof result === "object" && "error" in result ? result.error : null
+      } else {
+        const result = await performDelete(entityType, id)
+        error = result.error
+      }
       if (error) {
         toast.error(error)
         return

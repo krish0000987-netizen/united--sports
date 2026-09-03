@@ -68,9 +68,6 @@ export default async function TeamsPage() {
                       editHref={`/admin/teams/${t.id}`}
                       viewHref={t.status === "published" ? `/teams/${t.slug}` : null}
                       entityType="team"
-                      onDelete={async () => {
-                        await deleteTeam(t.id)
-                      }}
                     />
                   </TD>
                 </TR>

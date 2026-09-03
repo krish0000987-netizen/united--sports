@@ -62,7 +62,6 @@ export default async function GalleryPage() {
                       title={g.title || "Untitled"}
                       editHref={`/admin/gallery/${g.id}`}
                       entityType="gallery item"
-                      onDelete={async () => { await deleteGalleryItem(g.id) }}
                     />
                   </TD>
                 </TR>

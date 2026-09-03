@@ -70,9 +70,6 @@ export default async function AthletesPage() {
                       editHref={`/admin/athletes/${a.id}`}
                       viewHref={a.status === "published" ? `/athletes/${a.slug}` : null}
                       entityType="athlete"
-                      onDelete={async () => {
-                        await deleteAthlete(a.id)
-                      }}
                     />
                   </TD>
                 </TR>

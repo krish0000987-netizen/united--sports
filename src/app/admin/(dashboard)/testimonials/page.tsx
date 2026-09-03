@@ -64,9 +64,6 @@ export default async function TestimonialsPage() {
                       title={t.name}
                       editHref={`/admin/testimonials/${t.id}`}
                       entityType="testimonial"
-                      onDelete={async () => {
-                        await deleteTestimonial(t.id)
-                      }}
                     />
                   </TD>
                 </TR>

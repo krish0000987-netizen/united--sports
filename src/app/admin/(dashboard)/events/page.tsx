@@ -62,7 +62,6 @@ export default async function EventsPage() {
                       editHref={`/admin/events/${e.id}`}
                       viewHref={e.status !== "draft" ? `/events/${e.slug}` : null}
                       entityType="event"
-                      onDelete={async () => { await deleteEvent(e.id) }}
                     />
                   </TD>
                 </TR>

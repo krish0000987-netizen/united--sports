@@ -69,7 +69,6 @@ export default async function ProgrammesPage() {
                       editHref={`/admin/programmes/${p.id}`}
                       viewHref={p.status === "published" ? `/programmes/${p.slug}` : null}
                       entityType="programme"
-                      onDelete={async () => { await deleteProgramme(p.id) }}
                     />
                   </TD>
                 </TR>
