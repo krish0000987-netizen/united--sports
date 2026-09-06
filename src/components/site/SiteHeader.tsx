@@ -59,13 +59,13 @@ export function SiteHeader({
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-3.5 lg:flex xl:gap-6 2xl:gap-8">
+        <nav className="hidden items-center gap-2.5 lg:flex xl:gap-4 2xl:gap-6 ml-3 sm:ml-4 xl:ml-6 mr-auto">
           {nav.map((item) => (
             <Link
               key={item.id}
               href={item.href}
               className={cn(
-                "relative whitespace-nowrap text-xs font-semibold uppercase tracking-[0.08em] xl:text-sm xl:tracking-[0.14em] transition-colors hover:text-primary",
+                "relative whitespace-nowrap text-xs font-semibold uppercase tracking-[0.06em] xl:text-[13px] xl:tracking-[0.08em] 2xl:text-sm 2xl:tracking-[0.1em] transition-colors hover:text-primary",
                 pathname === item.href ? "text-primary" : "text-foreground/90",
               )}
             >
@@ -74,7 +74,7 @@ export function SiteHeader({
           ))}
         </nav>
 
-        <div className="hidden shrink-0 items-center gap-3 lg:flex xl:gap-4">
+        <div className="hidden shrink-0 items-center gap-2.5 lg:flex xl:gap-3.5 ml-auto">
           {phone && (
             <a
               href={`tel:${phone.replace(/[^0-9+]/g, "")}`}
@@ -86,7 +86,7 @@ export function SiteHeader({
           )}
           <Link
             href="/get-involved"
-            className="shrink-0 whitespace-nowrap rounded-sm bg-primary px-4 py-2 text-xs font-extrabold uppercase tracking-[0.1em] text-primary-foreground shadow-sm shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 xl:px-5 xl:py-2.5 xl:text-sm xl:tracking-[0.12em]"
+            className="shrink-0 whitespace-nowrap rounded-sm bg-primary px-3.5 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-primary-foreground shadow-sm shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 xl:px-4.5 xl:py-2.5 xl:text-xs 2xl:text-sm xl:tracking-[0.1em]"
           >
             Get Involved
           </Link>

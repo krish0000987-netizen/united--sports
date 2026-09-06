@@ -73,7 +73,7 @@ export default async function GetInvolvedPage() {
         </div>
       </section>
 
-      {page?.content && (
+      {typeof page?.content === "string" && page.content.trim().length > 0 && page.content.trim() !== "[object Object]" && (
         <section className="mx-auto max-w-4xl px-5 pb-24">
           <Reveal>
             <div

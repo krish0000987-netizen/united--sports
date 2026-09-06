@@ -457,6 +457,21 @@ export async function getSiteSettingsServer(): Promise<SiteSettings | null> {
 
 // ── Pages ────────────────────────────────────────────────────────────────────
 
+function sanitizePageContent(raw: unknown): string | null {
+  if (typeof raw === "string") {
+    const trimmed = raw.trim()
+    return trimmed && trimmed !== "[object Object]" ? trimmed : null
+  }
+  if (raw && typeof raw === "object") {
+    const html = (raw as Record<string, unknown>).html
+    if (typeof html === "string") {
+      const trimmed = html.trim()
+      return trimmed && trimmed !== "[object Object]" ? trimmed : null
+    }
+  }
+  return null
+}
+
 export async function getPagesServer(): Promise<Page[]> {
   try {
     const c = createPublicClient()
@@ -465,8 +480,11 @@ export async function getPagesServer(): Promise<Page[]> {
       .from("pages")
       .select("*")
       .order("updated_at", { ascending: false })
-    if (error) return []
-    return (data as Page[]) || []
+    if (error || !data) return []
+    return (data as Page[]).map((p) => ({
+      ...p,
+      content: sanitizePageContent(p.content),
+    }))
   } catch {
     return []
   }
@@ -482,8 +500,12 @@ export async function getPageBySlugServer(slug: string): Promise<Page | null> {
       .eq("slug", slug)
       .eq("status", "published")
       .maybeSingle()
-    if (error) return null
-    return (data as Page) ?? null
+    if (error || !data) return null
+    const page = data as Page
+    return {
+      ...page,
+      content: sanitizePageContent(page.content),
+    }
   } catch {
     return null
   }

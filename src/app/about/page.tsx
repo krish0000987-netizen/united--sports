@@ -54,7 +54,7 @@ export default async function AboutPage() {
       <section className="mx-auto max-w-7xl px-5 py-24">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <Reveal>
-            {page?.content ? (
+            {typeof page?.content === "string" && page.content.trim().length > 0 && page.content.trim() !== "[object Object]" ? (
               <div
                 className="cms-content max-w-none"
                 dangerouslySetInnerHTML={{ __html: page.content }}

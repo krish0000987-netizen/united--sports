@@ -69,7 +69,7 @@ export default async function AthleteDetailPage({ params }: Props) {
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">{athlete.biography}</p>
             )}
 
-            {athlete.profile_details && (
+            {typeof athlete.profile_details === "string" && athlete.profile_details.trim().length > 0 && athlete.profile_details.trim() !== "[object Object]" && (
               <div
                 className="cms-content mt-8 max-w-none"
                 dangerouslySetInnerHTML={{ __html: athlete.profile_details }}

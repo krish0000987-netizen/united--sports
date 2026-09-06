@@ -62,7 +62,7 @@ export default async function TeamDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {team.description && (
+        {typeof team.description === "string" && team.description.trim().length > 0 && team.description.trim() !== "[object Object]" && (
           <div
             className="cms-content mt-8 max-w-none"
             dangerouslySetInnerHTML={{ __html: team.description }}

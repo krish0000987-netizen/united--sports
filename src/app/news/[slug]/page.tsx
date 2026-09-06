@@ -59,7 +59,7 @@ export default async function ArticleDetailPage({ params }: Props) {
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">{article.excerpt}</p>
           )}
 
-          {article.content && (
+          {typeof article.content === "string" && article.content.trim().length > 0 && article.content.trim() !== "[object Object]" && (
             <div
               className="cms-content mt-10 max-w-none"
               dangerouslySetInnerHTML={{ __html: article.content }}

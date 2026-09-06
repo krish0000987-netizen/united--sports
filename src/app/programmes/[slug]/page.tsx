@@ -52,7 +52,7 @@ export default async function ProgrammeDetailPage({ params }: Props) {
           />
         )}
 
-        {programme.content && (
+        {typeof programme.content === "string" && programme.content.trim().length > 0 && programme.content.trim() !== "[object Object]" && (
           <div
             className="cms-content mt-10 max-w-none"
             dangerouslySetInnerHTML={{ __html: programme.content }}
