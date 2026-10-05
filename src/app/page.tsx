@@ -72,9 +72,9 @@ export default async function HomePage() {
               <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 w-full sm:w-auto">
                 <Link
                   href="/donate"
-                  className="inline-flex items-center justify-center gap-2.5 rounded-sm bg-gradient-gold px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-black uppercase tracking-[0.14em] text-navy-deep shadow-lg shadow-primary/30 transition-transform duration-300 hover:-translate-y-1 text-center"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-sm bg-[#C9A227] hover:bg-[#d8b43a] px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-black uppercase tracking-[0.14em] text-[#0B1D3A] shadow-lg shadow-[#C9A227]/30 transition-transform duration-300 hover:-translate-y-1 text-center"
                 >
-                  <Heart className="h-4 w-4 fill-navy-deep text-navy-deep" />
+                  <Heart className="h-4 w-4 fill-[#0B1D3A] text-[#0B1D3A]" />
                   <span>Donate to Athletes</span>
                 </Link>
                 {hero.button_text && hero.button_url && (

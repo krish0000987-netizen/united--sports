@@ -164,6 +164,10 @@ body:has(.admin-root) {
   color: transparent;
 }
 
+@utility bg-gradient-gold {
+  background: linear-gradient(100deg, #c9a227 0%, #ffd700 50%, #c9a227 100%);
+}
+
 @utility surface-card {
   background: linear-gradient(
     160deg,

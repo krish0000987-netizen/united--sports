@@ -60,18 +60,20 @@ export function SiteHeader({
         </Link>
 
         <nav className="hidden items-center gap-2.5 lg:flex xl:gap-4 2xl:gap-6 ml-3 sm:ml-4 xl:ml-6 mr-auto">
-          {nav.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(
-                "relative whitespace-nowrap text-xs font-semibold uppercase tracking-[0.06em] xl:text-[13px] xl:tracking-[0.08em] 2xl:text-sm 2xl:tracking-[0.1em] transition-colors hover:text-primary",
-                pathname === item.href ? "text-primary" : "text-foreground/90",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {nav
+            .filter((item) => item.href !== "/donate" && item.label?.toLowerCase() !== "donate")
+            .map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                className={cn(
+                  "relative whitespace-nowrap text-xs font-semibold uppercase tracking-[0.06em] xl:text-[13px] xl:tracking-[0.08em] 2xl:text-sm 2xl:tracking-[0.1em] transition-colors hover:text-primary",
+                  pathname === item.href ? "text-primary" : "text-foreground/90",
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
         </nav>
 
         <div className="hidden shrink-0 items-center gap-2 lg:flex xl:gap-3 ml-auto">
@@ -86,15 +88,15 @@ export function SiteHeader({
           )}
           <Link
             href="/get-involved"
-            className="shrink-0 whitespace-nowrap rounded-sm border border-primary/40 bg-transparent px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] text-primary transition-all duration-300 hover:bg-primary/10 xl:px-3.5 xl:py-2"
+            className="shrink-0 whitespace-nowrap rounded-sm border border-primary/50 bg-transparent px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] text-primary transition-all duration-300 hover:bg-primary/10 xl:px-3.5 xl:py-2"
           >
             Get Involved
           </Link>
           <Link
             href="/donate"
-            className="shrink-0 whitespace-nowrap rounded-sm bg-gradient-gold px-4 py-2 text-xs font-black uppercase tracking-[0.08em] text-navy-deep shadow-md shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/50 flex items-center gap-1.5 ring-1 ring-primary/40"
+            className="shrink-0 whitespace-nowrap rounded-sm bg-[#C9A227] hover:bg-[#d8b43a] text-[#0B1D3A] px-4 py-2 text-xs font-black uppercase tracking-[0.09em] shadow-lg shadow-[#C9A227]/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[#C9A227]/50 flex items-center gap-1.5 ring-1 ring-amber-300/60"
           >
-            <Heart size={14} className="fill-navy-deep text-navy-deep" />
+            <Heart size={14} className="fill-[#0B1D3A] text-[#0B1D3A]" />
             <span>Donate</span>
           </Link>
         </div>
@@ -103,9 +105,9 @@ export function SiteHeader({
         <div className="flex items-center gap-2 lg:hidden">
           <Link
             href="/donate"
-            className="flex items-center gap-1.5 rounded-sm bg-gradient-gold px-3 py-1.5 text-xs font-black uppercase tracking-[0.08em] text-navy-deep shadow-sm shadow-primary/25"
+            className="flex items-center gap-1.5 rounded-sm bg-[#C9A227] hover:bg-[#d8b43a] text-[#0B1D3A] px-3 py-1.5 text-xs font-black uppercase tracking-[0.08em] shadow-md shadow-[#C9A227]/30"
           >
-            <Heart size={12} className="fill-navy-deep text-navy-deep" />
+            <Heart size={12} className="fill-[#0B1D3A] text-[#0B1D3A]" />
             <span>Donate</span>
           </Link>
           <button
@@ -125,32 +127,28 @@ export function SiteHeader({
             <Link
               href="/donate"
               onClick={() => setOpen(false)}
-              className="w-full text-center rounded-sm bg-gradient-gold py-3 text-xs font-black uppercase tracking-[0.14em] text-navy-deep shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
+              className="w-full text-center rounded-sm bg-[#C9A227] hover:bg-[#d8b43a] text-[#0B1D3A] py-3 text-xs font-black uppercase tracking-[0.14em] shadow-lg shadow-[#C9A227]/30 flex items-center justify-center gap-2"
             >
-              <Heart size={15} className="fill-navy-deep text-navy-deep" />
+              <Heart size={15} className="fill-[#0B1D3A] text-[#0B1D3A]" />
               <span>Donate to Athletes</span>
             </Link>
           </div>
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-2">
-            {nav.map((item) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  "border-b border-border/60 py-3 text-sm font-semibold uppercase tracking-[0.16em] flex items-center justify-between",
-                  pathname === item.href ? "text-primary" : "text-foreground/90",
-                  item.href === "/donate" && "text-primary font-bold",
-                )}
-              >
-                <span>{item.label}</span>
-                {item.href === "/donate" && (
-                  <span className="text-[10px] bg-primary text-navy-deep font-black px-2 py-0.5 rounded">
-                    NEW
-                  </span>
-                )}
-              </Link>
-            ))}
+            {nav
+              .filter((item) => item.href !== "/donate" && item.label?.toLowerCase() !== "donate")
+              .map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "border-b border-border/60 py-3 text-sm font-semibold uppercase tracking-[0.16em]",
+                    pathname === item.href ? "text-primary" : "text-foreground/90",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
             {phone && (
               <a
                 href={`tel:${phone.replace(/[^0-9+]/g, "")}`}

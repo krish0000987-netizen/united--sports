@@ -62,7 +62,7 @@ export default async function GetInvolvedPage() {
           <Reveal delay={450}>
             <Link
               href="/donate"
-              className="flex h-full flex-col justify-between rounded-sm bg-gradient-gold p-8 text-navy-deep transition-transform duration-500 hover:-translate-y-2 shadow-xl shadow-primary/20"
+              className="flex h-full flex-col justify-between rounded-sm bg-[#C9A227] hover:bg-[#d8b43a] p-8 text-[#0B1D3A] transition-transform duration-500 hover:-translate-y-2 shadow-xl shadow-[#C9A227]/30"
             >
               <div>
                 <span className="inline-block text-[10px] font-black uppercase tracking-widest bg-navy-deep text-primary px-2.5 py-1 rounded-sm mb-3">
