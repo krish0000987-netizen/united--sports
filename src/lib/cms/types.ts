@@ -165,5 +165,41 @@ export type GalleryItemType = GalleryItem
 export type HomepageSectionType = HomepageSection
 export type EnquiryType = Enquiry
 export type AdminUserType = AdminUser
+export type RazorpaySettings = {
+  key_id: string
+  key_secret: string
+  is_enabled: boolean
+  mode: "test" | "live"
+  currency: string
+  min_amount: number
+  suggested_amounts: number[]
+  tax_benefit_info?: string
+  organization_name?: string
+  notes?: string
+}
+
+export type DonationRecord = {
+  id: string
+  donor_name: string
+  donor_email: string
+  donor_phone?: string | null
+  pan_number?: string | null
+  amount: number
+  currency: string
+  purpose: string
+  message?: string | null
+  is_anonymous: boolean
+  status: "pending" | "paid" | "failed"
+  razorpay_order_id?: string | null
+  razorpay_payment_id?: string | null
+  razorpay_signature?: string | null
+  payment_method?: string | null
+  notes?: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type CmsPageType = CmsPage
 export type SiteSettingsType = SiteSettings
+export type RazorpaySettingsType = RazorpaySettings
+export type DonationRecordType = DonationRecord

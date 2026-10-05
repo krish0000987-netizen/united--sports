@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
-import { Save, Loader2 } from "lucide-react"
+import Link from "next/link"
+import { Save, Loader2, CreditCard, ArrowRight } from "lucide-react"
 import { Input } from "@/components/ui/form"
 import { Card, CardHeader, CardTitle, CardBody } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
@@ -250,6 +251,34 @@ export function SiteSettingsForm({ settings }: { settings: SiteSettings }) {
                   />
                 </div>
               </div>
+            </CardBody>
+          </Card>
+
+          <Card className="border-amber-200/80 bg-gradient-to-br from-amber-50/50 to-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-slate-900">
+                <CreditCard className="h-5 w-5 text-amber-600" />
+                Razorpay & Donations
+              </CardTitle>
+            </CardHeader>
+            <CardBody className="space-y-3 text-sm">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Configure your Razorpay Key ID and Secret, toggle between test and live modes, and customize suggested donation amounts.
+              </p>
+              <Link
+                href="/admin/donations/settings"
+                className="inline-flex items-center justify-between w-full p-2.5 rounded-lg bg-amber-600 text-white font-medium text-xs hover:bg-amber-700 transition-colors shadow-xs"
+              >
+                <span>Configure Razorpay Keys</span>
+                <ArrowRight size={14} />
+              </Link>
+              <Link
+                href="/admin/donations"
+                className="inline-flex items-center justify-between w-full p-2.5 rounded-lg border border-slate-200 bg-white text-slate-700 font-medium text-xs hover:bg-slate-50 transition-colors"
+              >
+                <span>View Donations Dashboard</span>
+                <ArrowRight size={14} />
+              </Link>
             </CardBody>
           </Card>
         </div>

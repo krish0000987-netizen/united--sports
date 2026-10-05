@@ -97,6 +97,7 @@ export function SiteFooter({
             Section 8 Company.
           </span>
           <span className="flex items-center gap-4">
+            <Link href="/donate" className="text-primary hover:underline font-bold">Donate Now</Link>
             <Link href="/admin" className="hover:text-primary">Admin</Link>
             <span className="uppercase tracking-[0.24em]">Made for India&apos;s athletes</span>
           </span>

@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Phone } from "lucide-react"
+import { Menu, X, Phone, Heart } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { cn } from "@/lib/utils"
@@ -86,9 +86,16 @@ export function SiteHeader({
           )}
           <Link
             href="/get-involved"
-            className="shrink-0 whitespace-nowrap rounded-sm bg-primary px-3.5 py-2 text-xs font-extrabold uppercase tracking-[0.08em] text-primary-foreground shadow-sm shadow-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/40 xl:px-4.5 xl:py-2.5 xl:text-xs 2xl:text-sm xl:tracking-[0.1em]"
+            className="shrink-0 whitespace-nowrap rounded-sm border border-primary/40 bg-transparent px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] text-primary transition-all duration-300 hover:bg-primary/10 xl:px-4 xl:py-2.5 xl:text-xs 2xl:text-sm"
           >
             Get Involved
+          </Link>
+          <Link
+            href="/donate"
+            className="shrink-0 whitespace-nowrap rounded-sm bg-gradient-gold px-3.5 py-2 text-xs font-black uppercase tracking-[0.08em] text-navy-deep shadow-md shadow-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/40 xl:px-4.5 xl:py-2.5 xl:text-xs 2xl:text-sm xl:tracking-[0.1em] flex items-center gap-1.5"
+          >
+            <Heart size={13} className="fill-navy-deep text-navy-deep" />
+            <span>Donate</span>
           </Link>
         </div>
 
@@ -126,11 +133,19 @@ export function SiteHeader({
                 {phone}
               </a>
             )}
-            <div className="pt-3 pb-1">
+            <div className="pt-3 pb-1 space-y-2">
+              <Link
+                href="/donate"
+                onClick={() => setOpen(false)}
+                className="block w-full text-center rounded-sm bg-gradient-gold px-4 py-2.5 text-xs font-black uppercase tracking-[0.12em] text-navy-deep flex items-center justify-center gap-1.5"
+              >
+                <Heart size={14} className="fill-navy-deep text-navy-deep" />
+                <span>Donate Now</span>
+              </Link>
               <Link
                 href="/get-involved"
                 onClick={() => setOpen(false)}
-                className="block w-full text-center rounded-sm bg-primary px-4 py-2.5 text-xs font-extrabold uppercase tracking-[0.12em] text-primary-foreground"
+                className="block w-full text-center rounded-sm border border-primary/40 bg-transparent px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-primary"
               >
                 Get Involved
               </Link>

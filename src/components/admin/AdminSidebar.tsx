@@ -27,6 +27,9 @@ import {
   Tag,
   FileBox,
   BookOpen,
+  HeartHandshake,
+  CreditCard,
+  IndianRupee,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
@@ -50,6 +53,14 @@ const NAV_ITEMS: NavItem[] = [
       { label: "Site Settings", href: "/admin/settings", icon: Settings },
       { label: "Navigation", href: "/admin/navigation", icon: Navigation },
       { label: "Footer", href: "/admin/footer", icon: PanelBottom },
+    ],
+  },
+  {
+    label: "Donations",
+    icon: HeartHandshake,
+    children: [
+      { label: "All Donations", href: "/admin/donations", icon: IndianRupee },
+      { label: "Payment Gateway", href: "/admin/donations/settings", icon: CreditCard },
     ],
   },
   {
