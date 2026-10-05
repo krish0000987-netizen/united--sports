@@ -56,7 +56,7 @@ export const DEFAULT_HOMEPAGE_HERO: HomepageHero = {
   subheading: "UnitedAthletes for India Foundation",
   button_text: "Explore Programmes",
   button_url: "/programmes",
-  background_image: "/assets/hero-athletes.jpg",
+  background_image: "/assets/facility.jpg",
   overlay_opacity: 0.6,
   is_enabled: true,
   display_order: 1,
@@ -106,9 +106,9 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
     id: "sec-athletes",
     section_key: "athletes",
     section_type: "athletes",
-    title: "Our Athletes",
-    subtitle: "Athletes",
-    description: "Meet the talented individuals making strides across different sporting disciplines.",
+    title: "Popular Sports & Disciplines",
+    subtitle: "Games We Support",
+    description: "Explore the sporting disciplines, athletic divisions, and grassroots training programs supported by UnitedAthletes across India.",
     content: null,
     is_visible: true,
     display_order: 4,
@@ -119,9 +119,9 @@ export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
     id: "sec-events",
     section_key: "events",
     section_type: "events",
-    title: "Upcoming Events & Meets",
-    subtitle: "Events",
-    description: "Join us at tournaments, training camps, trials, and community gatherings.",
+    title: "Upcoming Events & Tournaments",
+    subtitle: "National Meets",
+    description: "Join us at championships, selection trials, and sporting meets across premier stadiums.",
     content: null,
     is_visible: true,
     display_order: 5,
@@ -275,49 +275,129 @@ export const DEFAULT_PROGRAMMES: Programme[] = [
 export const DEFAULT_ATHLETES: Athlete[] = [
   {
     id: "ath-1",
-    name: "Aarav Sharma",
-    slug: "aarav-sharma",
-    photo: "/assets/about-athlete.jpg",
-    sport: "Badminton",
-    category: "Singles / Senior",
-    biography: "National ranking badminton player training for international competitions.",
-    achievements: "State Champion 2025, National Quarter-finalist 2025",
+    name: "Athletics (Track & Field)",
+    slug: "athletics-track-and-field",
+    photo: null,
+    sport: "Track & Field",
+    category: "Sprints, Relays, Jumps & Throws",
+    biography: "Comprehensive training and grassroots support for track and field events, fostering next-generation athletic talent across India.",
+    achievements: "National Youth Podium Finishes, Grassroots Development in 12+ States",
     profile_details: null,
-    nationality: "Indian",
-    status: "published",
+    nationality: "India",
+    status: "active",
     display_order: 1,
     created_at: "",
     updated_at: "",
   },
   {
     id: "ath-2",
-    name: "Priya Patel",
-    slug: "priya-patel",
-    photo: "/assets/hero-athletes.jpg",
-    sport: "Athletics",
-    category: "Track & Field / 400m",
-    biography: "Sprint specialist aiming for national podium finishes and record timings.",
-    achievements: "Junior National Gold Medalist 2024",
+    name: "Badminton",
+    slug: "badminton",
+    photo: null,
+    sport: "Racquet Sports",
+    category: "Singles, Doubles & Mixed Doubles",
+    biography: "Elite coaching and equipment grants for promising badminton talent preparing for national circuits and international opens.",
+    achievements: "All-India Junior Finalists, State Championships",
     profile_details: null,
-    nationality: "Indian",
-    status: "published",
+    nationality: "India",
+    status: "active",
     display_order: 2,
     created_at: "",
     updated_at: "",
   },
   {
     id: "ath-3",
-    name: "Rohan Verma",
-    slug: "rohan-verma",
-    photo: "/assets/para-athlete.jpg",
-    sport: "Para Athletics",
-    category: "Javelin Throw / F46",
-    biography: "Dedicated para-athlete representing India at major championships.",
-    achievements: "Asian Para Games Silver 2023, National Gold 2024",
+    name: "Football",
+    slug: "football",
+    photo: null,
+    sport: "Team Sports",
+    category: "Youth Academy & Grassroots Leagues",
+    biography: "Grassroots academies and tactical training camps empowering aspiring footballers across regional talent hubs.",
+    achievements: "Inter-District Youth Champions, Academy Development",
     profile_details: null,
-    nationality: "Indian",
-    status: "published",
+    nationality: "India",
+    status: "active",
     display_order: 3,
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ath-4",
+    name: "Cricket",
+    slug: "cricket",
+    photo: null,
+    sport: "Team Sports",
+    category: "Youth Development & Pace Bowling Camp",
+    biography: "Structured youth clinics, gear distribution, and coaching masterclasses nurturing grassroots cricket talent.",
+    achievements: "State Junior League Champions, Grassroots Outreach",
+    profile_details: null,
+    nationality: "India",
+    status: "active",
+    display_order: 4,
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ath-5",
+    name: "Wrestling",
+    slug: "wrestling",
+    photo: null,
+    sport: "Combat Sports",
+    category: "Freestyle & Greco-Roman",
+    biography: "Specialized mats, strength conditioning, and nutritional support for emerging wrestlers across India training centers.",
+    achievements: "Cadet National Medals, Inter-State Tournament Gold",
+    profile_details: null,
+    nationality: "India",
+    status: "active",
+    display_order: 5,
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ath-6",
+    name: "Boxing",
+    slug: "boxing",
+    photo: null,
+    sport: "Combat Sports",
+    category: "Olympic Divisions & Youth Training",
+    biography: "Precision footwork, tactical spar conditioning, and tournament sponsorship for grassroots pugilists.",
+    achievements: "Youth National Finalists, Regional Boxing Cups",
+    profile_details: null,
+    nationality: "India",
+    status: "active",
+    display_order: 6,
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ath-7",
+    name: "Archery",
+    slug: "archery",
+    photo: null,
+    sport: "Precision Sports",
+    category: "Recurve & Compound",
+    biography: "High-grade bow kits, mental conditioning, and target training facilities supporting dedicated junior archers.",
+    achievements: "National School Games Gold, State Archery Ranking",
+    profile_details: null,
+    nationality: "India",
+    status: "active",
+    display_order: 7,
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ath-8",
+    name: "Para Sports",
+    slug: "para-sports",
+    photo: null,
+    sport: "Inclusive Sports",
+    category: "Para Athletics, Badminton & Powerlifting",
+    biography: "Dedicated sports wheelchairs, prosthetic maintenance, and equal training access for extraordinary para-athletes across India.",
+    achievements: "Asian Para Games Medalists, National Para Gold",
+    profile_details: null,
+    nationality: "India",
+    status: "active",
+    display_order: 8,
     created_at: "",
     updated_at: "",
   },
@@ -326,31 +406,76 @@ export const DEFAULT_ATHLETES: Athlete[] = [
 export const DEFAULT_EVENTS: Event[] = [
   {
     id: "ev-1",
-    title: "National Talent Hunt Trials 2026",
-    slug: "national-talent-hunt-trials-2026",
-    description: "Open talent identification trials across badminton, athletics, and archery for junior athletes.",
-    event_date: "2026-10-15",
+    title: "National Youth Athletics Championship 2026",
+    slug: "national-youth-athletics-championship-2026",
+    description: "Premier national track & field championship featuring 100m, 200m, 400m, hurdles, long jump, and javelin throw competitions for junior and senior talents across Indian states.",
+    event_date: "2026-10-28",
     start_time: "08:00",
-    end_time: "17:00",
+    end_time: "18:00",
     location: "Jawaharlal Nehru Stadium, New Delhi",
     featured_image: "/assets/facility.jpg",
     registration_url: "/contact",
-    status: "published",
+    status: "upcoming",
     created_at: "",
     updated_at: "",
   },
   {
     id: "ev-2",
-    title: "UnitedAthletes High Performance Workshop",
-    slug: "unitedathletes-high-performance-workshop",
-    description: "Intensive training camp and sports science symposium for coaches and athletes.",
-    event_date: "2026-11-20",
-    start_time: "09:30",
-    end_time: "16:00",
-    location: "National Sports Academy, Bengaluru",
-    featured_image: "/assets/support.jpg",
+    title: "All-India Grassroots Badminton Open 2026",
+    slug: "all-india-grassroots-badminton-open-2026",
+    description: "State-of-the-art badminton tournament featuring singles and doubles categories with professional grade synthetic courts and electronic scoring.",
+    event_date: "2026-11-15",
+    start_time: "09:00",
+    end_time: "19:00",
+    location: "Major Dhyan Chand National Stadium, New Delhi",
+    featured_image: "/assets/facility.jpg",
     registration_url: "/contact",
-    status: "published",
+    status: "upcoming",
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ev-3",
+    title: "National Inter-State Boxing & Combat Cup",
+    slug: "national-inter-state-boxing-combat-cup",
+    description: "Championship boxing bouts across Olympic weight divisions with certified judges, medical supervision, and high-performance talent scouts.",
+    event_date: "2026-12-05",
+    start_time: "10:00",
+    end_time: "18:30",
+    location: "Shree Shiv Chhatrapati Sports Complex (Balewadi), Pune",
+    featured_image: "/assets/facility.jpg",
+    registration_url: "/contact",
+    status: "upcoming",
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ev-4",
+    title: "All-India Para Sports Invitational 2027",
+    slug: "all-india-para-sports-invitational-2027",
+    description: "Inclusive national sporting event celebrating para athletics, seated javelin, wheelchair racing, and para badminton.",
+    event_date: "2027-01-12",
+    start_time: "08:30",
+    end_time: "17:30",
+    location: "Kalinga Stadium, Bhubaneswar, Odisha",
+    featured_image: "/assets/facility.jpg",
+    registration_url: "/contact",
+    status: "upcoming",
+    created_at: "",
+    updated_at: "",
+  },
+  {
+    id: "ev-5",
+    title: "National Youth Wrestling Trials 2027",
+    slug: "national-youth-wrestling-trials-2027",
+    description: "Freestyle and Greco-Roman wrestling selection trials for upcoming international youth camps and foundation sponsorships.",
+    event_date: "2027-02-20",
+    start_time: "08:00",
+    end_time: "17:00",
+    location: "Indira Gandhi Indoor Arena, New Delhi",
+    featured_image: "/assets/facility.jpg",
+    registration_url: "/contact",
+    status: "upcoming",
     created_at: "",
     updated_at: "",
   },
@@ -406,22 +531,22 @@ export const DEFAULT_ARTICLES: Article[] = [
 export const DEFAULT_TESTIMONIALS: Testimonial[] = [
   {
     id: "test-1",
-    name: "Vikram Malhotra",
-    role: "Senior Athletics Coach",
+    name: "National Sports Development Panel",
+    role: "Coaching & Mentorship Council",
     photo: null,
-    quote: "UnitedAthletes provides the exact infrastructure and consistent backing that our athletes need to transition from local talent to international contenders.",
-    status: "published",
+    quote: "UnitedAthletes provides the exact infrastructure, nutritional support, and consistent backing that emerging sports talents need across India to compete at the highest level.",
+    status: "active",
     display_order: 1,
     created_at: "",
     updated_at: "",
   },
   {
     id: "test-2",
-    name: "Sunita Rao",
-    role: "National Badminton Finalist",
+    name: "Grassroots Academy Director",
+    role: "Regional Talent Scout",
     photo: null,
-    quote: "Having access to professional coaching and top-tier equipment without financial stress has completely transformed my focus and confidence on court.",
-    status: "published",
+    quote: "Having access to professional equipment and tournament grants without financial burden enables athletes to focus entirely on their performance and dream big.",
+    status: "active",
     display_order: 2,
     created_at: "",
     updated_at: "",
@@ -429,10 +554,10 @@ export const DEFAULT_TESTIMONIALS: Testimonial[] = [
 ]
 
 export const DEFAULT_GALLERY_ITEMS: GalleryItem[] = [
-  { id: "gal-1", title: "Training Session", image_url: "/assets/facility.jpg", alt_text: "Indoor sports arena", description: "Indoor training facilities", category: "Facilities", status: "published", display_order: 1, created_at: "", updated_at: "" },
-  { id: "gal-2", title: "Equipment Distribution", image_url: "/assets/equipment.jpg", alt_text: "Athletic equipment", description: "Equipment and gear distribution", category: "Gear", status: "published", display_order: 2, created_at: "", updated_at: "" },
-  { id: "gal-3", title: "Athlete Focus", image_url: "/assets/about-athlete.jpg", alt_text: "Badminton player in focus", description: "Athletes at competition", category: "Athletes", status: "published", display_order: 3, created_at: "", updated_at: "" },
-  { id: "gal-4", title: "Community Huddle", image_url: "/assets/community.jpg", alt_text: "Athletes together", description: "Community gatherings", category: "Community", status: "published", display_order: 4, created_at: "", updated_at: "" },
+  { id: "gal-1", title: "Training Session", image_url: "/assets/facility.jpg", alt_text: "Indoor sports arena", description: "Indoor training facilities", category: "Facilities", status: "active", display_order: 1, created_at: "", updated_at: "" },
+  { id: "gal-2", title: "Equipment Distribution", image_url: "/assets/equipment.jpg", alt_text: "Athletic equipment", description: "Equipment and gear distribution", category: "Gear", status: "active", display_order: 2, created_at: "", updated_at: "" },
+  { id: "gal-3", title: "Coaching Session", image_url: "/assets/support.jpg", alt_text: "Athlete mentorship and coaching session", description: "Mentorship and training", category: "Coaching", status: "active", display_order: 3, created_at: "", updated_at: "" },
+  { id: "gal-4", title: "Community Huddle", image_url: "/assets/community.jpg", alt_text: "Community sporting initiative", description: "Community gatherings", category: "Community", status: "active", display_order: 4, created_at: "", updated_at: "" },
 ]
 
 // ── Site settings (single row) ───────────────────────────────────────────────
@@ -441,14 +566,43 @@ export async function getSiteSettingsServer(): Promise<SiteSettings | null> {
   try {
     const c = createPublicClient()
     if (!c) return DEFAULT_SITE_SETTINGS
-    const { data, error } = await c
+    const { data: rows, error } = await c
       .from("site_settings")
       .select("*")
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle()
-    if (error || !data) return DEFAULT_SITE_SETTINGS
-    return data as SiteSettings
+    if (error || !rows || rows.length === 0) return DEFAULT_SITE_SETTINGS
+
+    const map: Record<string, any> = {}
+    for (const r of rows) {
+      if (r.key && r.value) map[r.key] = r.value
+    }
+
+    const general = map["general"] || {}
+    const contact = map["contact"] || {}
+    const social = map["social"] || {}
+    const whatsapp = map["whatsapp"] || {}
+    const seo = map["seo"] || {}
+
+    return {
+      id: "site_settings_unified",
+      site_name: general.site_name || DEFAULT_SITE_SETTINGS.site_name,
+      description: general.footer_blurb || seo.default_description || DEFAULT_SITE_SETTINGS.description,
+      logo_url: general.logo_url || DEFAULT_SITE_SETTINGS.logo_url,
+      favicon_url: general.favicon_url || DEFAULT_SITE_SETTINGS.favicon_url,
+      email: contact.email || DEFAULT_SITE_SETTINGS.email,
+      phone: contact.phone || DEFAULT_SITE_SETTINGS.phone,
+      address: contact.address || DEFAULT_SITE_SETTINGS.address,
+      whatsapp: whatsapp.phone_number || DEFAULT_SITE_SETTINGS.whatsapp,
+      facebook_url: social.facebook || DEFAULT_SITE_SETTINGS.facebook_url,
+      instagram_url: social.instagram || DEFAULT_SITE_SETTINGS.instagram_url,
+      youtube_url: social.youtube || DEFAULT_SITE_SETTINGS.youtube_url,
+      twitter_url: social.twitter || DEFAULT_SITE_SETTINGS.twitter_url,
+      linkedin_url: social.linkedin || DEFAULT_SITE_SETTINGS.linkedin_url,
+      primary_color: general.primary_color || DEFAULT_SITE_SETTINGS.primary_color,
+      secondary_color: general.secondary_color || DEFAULT_SITE_SETTINGS.secondary_color,
+      footer_text: general.footer_blurb || DEFAULT_SITE_SETTINGS.footer_text,
+      created_at: "",
+      updated_at: new Date().toISOString(),
+    }
   } catch (err) {
     console.error("[cms] getSiteSettingsServer error:", err)
     return DEFAULT_SITE_SETTINGS
@@ -582,7 +736,13 @@ export async function getEventsServer(opts?: {
       .from("events")
       .select("*")
       .order("event_date", { ascending: true })
-    if (opts?.status) q = q.eq("status", opts.status)
+    if (opts?.status) {
+      if (opts.status === "published" || opts.status === "upcoming") {
+        q = q.in("status", ["upcoming", "live", "published"])
+      } else {
+        q = q.eq("status", opts.status)
+      }
+    }
     if (opts?.upcoming) q = q.gte("event_date", new Date().toISOString().split("T")[0])
     if (opts?.limit) q = q.limit(opts.limit)
     const { data, error } = await q
@@ -601,7 +761,7 @@ export async function getEventBySlugServer(slug: string): Promise<Event | null> 
       .from("events")
       .select("*")
       .eq("slug", slug)
-      .eq("status", "published")
+      .in("status", ["upcoming", "live", "completed", "published"])
       .maybeSingle()
     if (error || !data) return DEFAULT_EVENTS.find((e) => e.slug === slug) || null
     return data as Event
@@ -664,7 +824,13 @@ export async function getAthletesServer(opts?: {
       .from("athletes")
       .select("*")
       .order("display_order", { ascending: true })
-    if (opts?.status) q = q.eq("status", opts.status)
+    if (opts?.status) {
+      if (opts.status === "published" || opts.status === "active") {
+        q = q.in("status", ["active", "published"])
+      } else {
+        q = q.eq("status", opts.status)
+      }
+    }
     if (opts?.sport) q = q.eq("sport", opts.sport)
     if (opts?.limit) q = q.limit(opts.limit)
     const { data, error } = await q
@@ -683,7 +849,7 @@ export async function getAthleteBySlugServer(slug: string): Promise<Athlete | nu
       .from("athletes")
       .select("*")
       .eq("slug", slug)
-      .eq("status", "published")
+      .in("status", ["active", "published"])
       .maybeSingle()
     if (error || !data) return DEFAULT_ATHLETES.find((a) => a.slug === slug) || null
     return data as Athlete
@@ -705,7 +871,13 @@ export async function getTeamsServer(opts?: {
       .from("teams")
       .select("*")
       .order("display_order", { ascending: true })
-    if (opts?.status) q = q.eq("status", opts.status)
+    if (opts?.status) {
+      if (opts.status === "published" || opts.status === "active") {
+        q = q.in("status", ["active", "published"])
+      } else {
+        q = q.eq("status", opts.status)
+      }
+    }
     if (opts?.limit) q = q.limit(opts.limit)
     const { data, error } = await q
     if (error) return []
@@ -723,7 +895,7 @@ export async function getTeamBySlugServer(slug: string): Promise<Team | null> {
       .from("teams")
       .select("*")
       .eq("slug", slug)
-      .eq("status", "published")
+      .in("status", ["active", "published"])
       .maybeSingle()
     if (error) return null
     return (data as Team) ?? null
@@ -762,7 +934,13 @@ export async function getTestimonialsServer(opts?: {
       .from("testimonials")
       .select("*")
       .order("display_order", { ascending: true })
-    if (opts?.status) q = q.eq("status", opts.status)
+    if (opts?.status) {
+      if (opts.status === "published" || opts.status === "active") {
+        q = q.in("status", ["active", "published"])
+      } else {
+        q = q.eq("status", opts.status)
+      }
+    }
     if (opts?.limit) q = q.limit(opts.limit)
     const { data, error } = await q
     if (error || !data || data.length === 0) return DEFAULT_TESTIMONIALS.slice(0, opts?.limit || 10)
@@ -786,7 +964,13 @@ export async function getGalleryItemsServer(opts?: {
       .from("gallery")
       .select("*")
       .order("display_order", { ascending: true })
-    if (opts?.status) q = q.eq("status", opts.status)
+    if (opts?.status) {
+      if (opts.status === "published" || opts.status === "active") {
+        q = q.in("status", ["active", "published"])
+      } else {
+        q = q.eq("status", opts.status)
+      }
+    }
     if (opts?.category) q = q.eq("category", opts.category)
     if (opts?.limit) q = q.limit(opts.limit)
     const { data, error } = await q

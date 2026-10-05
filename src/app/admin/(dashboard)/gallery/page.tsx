@@ -51,7 +51,7 @@ export default async function GalleryPage() {
                   </TD>
                   <TD className="text-xs">{g.category || "—"}</TD>
                   <TD>
-                    <Badge variant={g.status === "published" ? "success" : "default"}>
+                    <Badge variant={g.status === "active" || g.status === "published" ? "success" : "default"}>
                       {g.status}
                     </Badge>
                   </TD>

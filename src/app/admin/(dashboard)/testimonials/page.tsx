@@ -53,7 +53,7 @@ export default async function TestimonialsPage() {
                   </TD>
                   <TD className="text-xs">{t.role || "—"}</TD>
                   <TD>
-                    <Badge variant={t.status === "published" ? "success" : "default"}>
+                    <Badge variant={t.status === "active" || t.status === "published" ? "success" : "default"}>
                       {t.status}
                     </Badge>
                   </TD>

@@ -24,7 +24,7 @@ export function EventForm({ event }: { event: Event | null }) {
     location: event?.location || "",
     featured_image: event?.featured_image || null,
     registration_url: event?.registration_url || "",
-    status: event?.status || "published",
+    status: event?.status || "upcoming",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -153,9 +153,10 @@ export function EventForm({ event }: { event: Event | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "draft", label: "Draft" },
-                  { value: "published", label: "Published" },
-                  { value: "archived", label: "Archived" },
+                  { value: "upcoming", label: "Upcoming" },
+                  { value: "live", label: "Live Event" },
+                  { value: "completed", label: "Completed" },
+                  { value: "cancelled", label: "Cancelled" },
                 ]}
               />
             </CardBody>

@@ -14,6 +14,41 @@ function errMessage(e: { message?: string } | null): string {
   return e?.message || "Something went wrong. Please try again."
 }
 
+export function normalizeAthleteStatus(status?: unknown): string {
+  if (status === "published" || status === "active" || !status) return "active"
+  if (status === "draft" || status === "inactive") return "inactive"
+  if (status === "archived" || status === "retired") return "retired"
+  return String(status)
+}
+
+export function normalizeEventStatus(status?: unknown): string {
+  if (status === "published" || status === "upcoming" || !status) return "upcoming"
+  if (status === "live") return "live"
+  if (status === "draft" || status === "cancelled") return "cancelled"
+  if (status === "archived" || status === "completed") return "completed"
+  return String(status)
+}
+
+export function normalizeTeamStatus(status?: unknown): string {
+  if (status === "published" || status === "active" || !status) return "active"
+  if (status === "draft" || status === "inactive") return "inactive"
+  return String(status)
+}
+
+export function normalizeTestimonialStatus(status?: unknown): string {
+  if (status === "published" || status === "active" || !status) return "active"
+  if (status === "draft" || status === "inactive") return "inactive"
+  if (status === "archived") return "archived"
+  return String(status)
+}
+
+export function normalizeGalleryStatus(status?: unknown): string {
+  if (status === "published" || status === "active" || !status) return "active"
+  if (status === "draft" || status === "inactive") return "inactive"
+  if (status === "archived") return "archived"
+  return String(status)
+}
+
 // ── Who am I / activity logging ──────────────────────────────────────────────
 
 export async function getCurrentUser() {
@@ -59,20 +94,66 @@ export async function createActivityLog(input: {
 
 export async function updateSiteSettings(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data: settings } = await supabase
-    .from("site_settings")
-    .select("id")
-    .limit(1)
-    .maybeSingle()
-  if (!settings) return { data: null, error: "No site settings row exists. Run the database seed first." }
-  const { data, error } = await supabase
-    .from("site_settings")
-    .update({ ...input, updated_at: new Date().toISOString() })
-    .eq("id", settings.id)
-    .select()
-    .single()
-  if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  try {
+    const { data: rows } = await supabase.from("site_settings").select("*")
+    const map: Record<string, any> = {}
+    for (const r of rows || []) {
+      if (r.key && r.value) map[r.key] = r.value
+    }
+
+    const general = {
+      ...(map["general"] || {}),
+      site_name: input.site_name || map["general"]?.site_name || "UnitedAthletes",
+      footer_blurb: input.description !== undefined ? input.description : map["general"]?.footer_blurb,
+      logo_url: input.logo_url !== undefined ? input.logo_url : map["general"]?.logo_url,
+      favicon_url: input.favicon_url !== undefined ? input.favicon_url : map["general"]?.favicon_url,
+      primary_color: input.primary_color !== undefined ? input.primary_color : map["general"]?.primary_color,
+      secondary_color: input.secondary_color !== undefined ? input.secondary_color : map["general"]?.secondary_color,
+    }
+
+    const contact = {
+      ...(map["contact"] || {}),
+      email: input.email !== undefined ? input.email : map["contact"]?.email,
+      phone: input.phone !== undefined ? input.phone : map["contact"]?.phone,
+      phone_tel: input.phone !== undefined ? input.phone : map["contact"]?.phone_tel,
+      address: input.address !== undefined ? input.address : map["contact"]?.address,
+    }
+
+    const social = {
+      ...(map["social"] || {}),
+      facebook: input.facebook_url !== undefined ? input.facebook_url : map["social"]?.facebook,
+      instagram: input.instagram_url !== undefined ? input.instagram_url : map["social"]?.instagram,
+      youtube: input.youtube_url !== undefined ? input.youtube_url : map["social"]?.youtube,
+      twitter: input.twitter_url !== undefined ? input.twitter_url : map["social"]?.twitter,
+      linkedin: input.linkedin_url !== undefined ? input.linkedin_url : map["social"]?.linkedin,
+    }
+
+    const whatsapp = {
+      ...(map["whatsapp"] || {}),
+      enabled: Boolean(input.whatsapp),
+      phone_number: input.whatsapp !== undefined ? input.whatsapp : map["whatsapp"]?.phone_number,
+    }
+
+    const seo = {
+      ...(map["seo"] || {}),
+      site_name: input.site_name || map["seo"]?.site_name || "UnitedAthletes",
+      default_description: input.description !== undefined ? input.description : map["seo"]?.default_description,
+      og_image_url: input.logo_url || "/assets/facility.jpg",
+    }
+
+    const now = new Date().toISOString()
+    await Promise.all([
+      supabase.from("site_settings").upsert({ key: "general", value: general, updated_at: now }, { onConflict: "key" }),
+      supabase.from("site_settings").upsert({ key: "contact", value: contact, updated_at: now }, { onConflict: "key" }),
+      supabase.from("site_settings").upsert({ key: "social", value: social, updated_at: now }, { onConflict: "key" }),
+      supabase.from("site_settings").upsert({ key: "whatsapp", value: whatsapp, updated_at: now }, { onConflict: "key" }),
+      supabase.from("site_settings").upsert({ key: "seo", value: seo, updated_at: now }, { onConflict: "key" }),
+    ])
+
+    return { data: { id: "site_settings_unified", ...input } as any, error: null }
+  } catch (err: any) {
+    return { data: null, error: err?.message || "Failed to update site settings" }
+  }
 }
 
 // ── Articles ─────────────────────────────────────────────────────────────────
@@ -149,14 +230,22 @@ export async function deleteArticleCategory(id: string) {
 
 export async function createEvent(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("events").insert(input).select().single()
+  const payload = {
+    ...input,
+    status: normalizeEventStatus(input.status),
+  }
+  const { data, error } = await supabase.from("events").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateEvent(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("events").update(input).eq("id", id).select().single()
+  const payload = {
+    ...input,
+    ...(input.status !== undefined ? { status: normalizeEventStatus(input.status) } : {}),
+  }
+  const { data, error } = await supabase.from("events").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -169,11 +258,11 @@ export async function deleteEvent(id: string): Promise<Result<never>> {
 }
 
 export async function publishEvent(id: string) {
-  return updateEvent(id, { status: "published" })
+  return updateEvent(id, { status: "upcoming" })
 }
 
 export async function unpublishEvent(id: string) {
-  return updateEvent(id, { status: "draft" })
+  return updateEvent(id, { status: "cancelled" })
 }
 
 // ── Programmes ───────────────────────────────────────────────────────────────
@@ -211,14 +300,22 @@ export async function unpublishProgramme(id: string) {
 
 export async function createAthlete(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("athletes").insert(input).select().single()
+  const payload = {
+    ...input,
+    status: normalizeAthleteStatus(input.status),
+  }
+  const { data, error } = await supabase.from("athletes").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateAthlete(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("athletes").update(input).eq("id", id).select().single()
+  const payload = {
+    ...input,
+    ...(input.status !== undefined ? { status: normalizeAthleteStatus(input.status) } : {}),
+  }
+  const { data, error } = await supabase.from("athletes").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -231,25 +328,33 @@ export async function deleteAthlete(id: string): Promise<Result<never>> {
 }
 
 export async function publishAthlete(id: string) {
-  return updateAthlete(id, { status: "published" })
+  return updateAthlete(id, { status: "active" })
 }
 
 export async function unpublishAthlete(id: string) {
-  return updateAthlete(id, { status: "draft" })
+  return updateAthlete(id, { status: "inactive" })
 }
 
 // ── Teams ────────────────────────────────────────────────────────────────────
 
 export async function createTeam(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("teams").insert(input).select().single()
+  const payload = {
+    ...input,
+    status: normalizeTeamStatus(input.status),
+  }
+  const { data, error } = await supabase.from("teams").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateTeam(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("teams").update(input).eq("id", id).select().single()
+  const payload = {
+    ...input,
+    ...(input.status !== undefined ? { status: normalizeTeamStatus(input.status) } : {}),
+  }
+  const { data, error } = await supabase.from("teams").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -262,11 +367,11 @@ export async function deleteTeam(id: string): Promise<Result<never>> {
 }
 
 export async function publishTeam(id: string) {
-  return updateTeam(id, { status: "published" })
+  return updateTeam(id, { status: "active" })
 }
 
 export async function unpublishTeam(id: string) {
-  return updateTeam(id, { status: "draft" })
+  return updateTeam(id, { status: "inactive" })
 }
 
 // ── Team roster ──────────────────────────────────────────────────────────────
@@ -297,14 +402,22 @@ export async function removeTeamAthlete(teamId: string, athleteId: string): Prom
 
 export async function createTestimonial(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("testimonials").insert(input).select().single()
+  const payload = {
+    ...input,
+    status: normalizeTestimonialStatus(input.status),
+  }
+  const { data, error } = await supabase.from("testimonials").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateTestimonial(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("testimonials").update(input).eq("id", id).select().single()
+  const payload = {
+    ...input,
+    ...(input.status !== undefined ? { status: normalizeTestimonialStatus(input.status) } : {}),
+  }
+  const { data, error } = await supabase.from("testimonials").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -317,25 +430,33 @@ export async function deleteTestimonial(id: string): Promise<Result<never>> {
 }
 
 export async function publishTestimonial(id: string) {
-  return updateTestimonial(id, { status: "published" })
+  return updateTestimonial(id, { status: "active" })
 }
 
 export async function unpublishTestimonial(id: string) {
-  return updateTestimonial(id, { status: "draft" })
+  return updateTestimonial(id, { status: "inactive" })
 }
 
 // ── Gallery ──────────────────────────────────────────────────────────────────
 
 export async function createGalleryItem(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("gallery").insert(input).select().single()
+  const payload = {
+    ...input,
+    status: normalizeGalleryStatus(input.status),
+  }
+  const { data, error } = await supabase.from("gallery").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateGalleryItem(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("gallery").update(input).eq("id", id).select().single()
+  const payload = {
+    ...input,
+    ...(input.status !== undefined ? { status: normalizeGalleryStatus(input.status) } : {}),
+  }
+  const { data, error } = await supabase.from("gallery").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -348,11 +469,11 @@ export async function deleteGalleryItem(id: string): Promise<Result<never>> {
 }
 
 export async function publishGalleryItem(id: string) {
-  return updateGalleryItem(id, { status: "published" })
+  return updateGalleryItem(id, { status: "active" })
 }
 
 export async function unpublishGalleryItem(id: string) {
-  return updateGalleryItem(id, { status: "draft" })
+  return updateGalleryItem(id, { status: "inactive" })
 }
 
 // ── CMS Pages ────────────────────────────────────────────────────────────────

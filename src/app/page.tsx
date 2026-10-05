@@ -51,7 +51,7 @@ export default async function HomePage() {
         <section className="grain relative flex min-h-[85vh] sm:min-h-[92vh] items-center overflow-hidden bg-navy-deep">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={hero.background_image || "/assets/hero-athletes.jpg"}
+            src={hero.background_image || "/assets/facility.jpg"}
             alt=""
             loading="eager"
             fetchPriority="high"
@@ -156,8 +156,8 @@ export default async function HomePage() {
                   <Reveal delay={140}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/assets/about-athlete.jpg"
-                      alt="Indian badminton player mid-smash under a spotlight"
+                      src="/assets/facility.jpg"
+                      alt="Modern sports complex and athletics training infrastructure"
                       loading="lazy"
                       className="w-full rounded-sm object-cover shadow-[var(--shadow-lift)]"
                     />
@@ -392,14 +392,14 @@ export default async function HomePage() {
                 <Reveal>
                   <p className="eyebrow">{section.subtitle || 'Our Focus'}</p>
                   <div className="rule-gold mt-4" />
-                  <h2 className="mt-6 max-w-2xl text-4xl sm:text-5xl">{section.title || 'Four pillars, one athlete'}</h2>
+                  <h2 className="mt-6 max-w-2xl text-4xl sm:text-5xl">{section.title || 'Four pillars of sporting excellence'}</h2>
                 </Reveal>
                 <div className="mt-14 grid gap-8 md:grid-cols-2">
                   {[
-                    { n: "01", title: "Athletes", text: "Supporting athletes in their journey from potential to performance.", img: "/assets/para-athlete.jpg", alt: "Indian para-athlete racing on a track" },
-                    { n: "02", title: "Facilities", text: "Helping athletes access quality sports infrastructure and training environments.", img: "/assets/facility.jpg", alt: "Modern indoor sports arena" },
-                    { n: "03", title: "Equipment", text: "Providing access to essential sports equipment and resources.", img: "/assets/equipment.jpg", alt: "Sports equipment" },
-                    { n: "04", title: "Opportunities", text: "Creating pathways for athletes to showcase talent and pursue their goals.", img: "/assets/community.jpg", alt: "Athletes in a huddle" },
+                    { n: "01", title: "Sports Development", text: "Supporting athletes across India in their journey from potential to national performance.", img: "/assets/support.jpg", alt: "Sports training and athletics development" },
+                    { n: "02", title: "Facilities", text: "Helping athletes access quality sports infrastructure and world-class training environments.", img: "/assets/facility.jpg", alt: "Modern indoor sports arena" },
+                    { n: "03", title: "Equipment", text: "Providing access to essential tournament-grade sports equipment and resources.", img: "/assets/equipment.jpg", alt: "Sports equipment" },
+                    { n: "04", title: "Opportunities", text: "Creating pathways for youth to showcase talent and compete in state and national championships.", img: "/assets/community.jpg", alt: "Athletes in a huddle" },
                   ].map((f, i) => (
                     <Reveal key={f.title} delay={i * 100}>
                       <article className="group relative h-[26rem] overflow-hidden rounded-sm border border-border">

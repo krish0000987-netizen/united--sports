@@ -497,7 +497,7 @@ export function DonationForm({ initialConfig }: { initialConfig: DonationConfig 
               required
               value={donorName}
               onChange={(e) => setDonorName(e.target.value)}
-              placeholder="e.g. Vikram Malhotra"
+              placeholder="e.g. Rajesh Kumar"
               className="w-full rounded-lg border border-border bg-background/60 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary"
             />
           </div>
@@ -511,7 +511,7 @@ export function DonationForm({ initialConfig }: { initialConfig: DonationConfig 
               required
               value={donorEmail}
               onChange={(e) => setDonorEmail(e.target.value)}
-              placeholder="e.g. vikram@example.com"
+              placeholder="e.g. rajesh@example.com"
               className="w-full rounded-lg border border-border bg-background/60 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary"
             />
           </div>

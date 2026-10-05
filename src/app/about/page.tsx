@@ -78,8 +78,8 @@ export default async function AboutPage() {
           <Reveal delay={140}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/assets/about-athlete.jpg"
-              alt="Indian badminton player mid-smash under a spotlight"
+              src="/assets/facility.jpg"
+              alt="State-of-the-art sports complex and athletics training infrastructure"
               width={1200}
               height={1504}
               loading="lazy"

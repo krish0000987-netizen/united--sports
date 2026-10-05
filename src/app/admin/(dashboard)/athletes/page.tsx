@@ -58,7 +58,7 @@ export default async function AthletesPage() {
                   <TD className="text-xs">{a.sport || "—"}</TD>
                   <TD className="text-xs">{a.nationality || "—"}</TD>
                   <TD>
-                    <Badge variant={a.status === "published" ? "success" : "default"}>
+                    <Badge variant={a.status === "active" || a.status === "published" ? "success" : "default"}>
                       {a.status}
                     </Badge>
                   </TD>
@@ -68,7 +68,7 @@ export default async function AthletesPage() {
                       id={a.id}
                       title={a.name}
                       editHref={`/admin/athletes/${a.id}`}
-                      viewHref={a.status === "published" ? `/athletes/${a.slug}` : null}
+                      viewHref={a.status === "active" || a.status === "published" ? `/athletes/${a.slug}` : null}
                       entityType="athlete"
                     />
                   </TD>

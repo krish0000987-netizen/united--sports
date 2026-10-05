@@ -23,7 +23,7 @@ export function AthleteForm({ athlete }: { athlete: Athlete | null }) {
     biography: athlete?.biography || "",
     achievements: athlete?.achievements || "",
     photo: athlete?.photo || null,
-    status: athlete?.status || "published",
+    status: athlete?.status || "active",
     display_order: athlete?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -143,9 +143,9 @@ export function AthleteForm({ athlete }: { athlete: Athlete | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "published", label: "Published" },
-                  { value: "draft", label: "Draft" },
-                  { value: "archived", label: "Archived" },
+                  { value: "active", label: "Active (Published)" },
+                  { value: "inactive", label: "Inactive (Draft)" },
+                  { value: "retired", label: "Retired / Archived" },
                 ]}
               />
               <Input

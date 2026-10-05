@@ -56,7 +56,7 @@ export default async function TeamsPage() {
                   </TD>
                   <TD className="text-xs">{t.sport || "—"}</TD>
                   <TD>
-                    <Badge variant={t.status === "published" ? "success" : "default"}>
+                    <Badge variant={t.status === "active" || t.status === "published" ? "success" : "default"}>
                       {t.status}
                     </Badge>
                   </TD>
@@ -66,7 +66,7 @@ export default async function TeamsPage() {
                       id={t.id}
                       title={t.name}
                       editHref={`/admin/teams/${t.id}`}
-                      viewHref={t.status === "published" ? `/teams/${t.slug}` : null}
+                      viewHref={t.status === "active" || t.status === "published" ? `/teams/${t.slug}` : null}
                       entityType="team"
                     />
                   </TD>

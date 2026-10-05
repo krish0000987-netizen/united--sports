@@ -21,7 +21,7 @@ export function PageHero({
     <section className="grain relative flex min-h-[48vh] sm:min-h-[58vh] items-end overflow-hidden pt-24 sm:pt-28 bg-navy-deep">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={image || "/assets/hero-athletes.jpg"}
+        src={image || "/assets/facility.jpg"}
         alt={alt}
         loading="eager"
         fetchPriority="high"

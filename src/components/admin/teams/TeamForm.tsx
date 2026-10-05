@@ -21,7 +21,7 @@ export function TeamForm({ team }: { team: Team | null }) {
     description: team?.description || "",
     logo: team?.logo || null,
     cover_image: team?.cover_image || null,
-    status: team?.status || "published",
+    status: team?.status || "active",
     display_order: team?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -175,9 +175,8 @@ export function TeamForm({ team }: { team: Team | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "published", label: "Published" },
-                  { value: "draft", label: "Draft" },
-                  { value: "archived", label: "Archived" },
+                  { value: "active", label: "Active (Published)" },
+                  { value: "inactive", label: "Inactive (Draft)" },
                 ]}
               />
               <Input

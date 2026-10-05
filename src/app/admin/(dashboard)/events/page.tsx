@@ -51,7 +51,7 @@ export default async function EventsPage() {
                   </TD>
                   <TD className="text-xs">{e.location || "—"}</TD>
                   <TD>
-                    <Badge variant={e.status === "published" ? "success" : e.status === "draft" ? "default" : e.status === "archived" ? "default" : "danger"}>
+                    <Badge variant={e.status === "upcoming" || e.status === "published" || e.status === "live" ? "success" : e.status === "completed" ? "info" : "default"}>
                       {e.status}
                     </Badge>
                   </TD>
@@ -60,7 +60,7 @@ export default async function EventsPage() {
                       id={e.id}
                       title={e.title}
                       editHref={`/admin/events/${e.id}`}
-                      viewHref={e.status !== "draft" ? `/events/${e.slug}` : null}
+                      viewHref={e.status !== "cancelled" && e.status !== "draft" ? `/events/${e.slug}` : null}
                       entityType="event"
                     />
                   </TD>

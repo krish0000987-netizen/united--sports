@@ -20,7 +20,7 @@ export function TestimonialForm({ testimonial }: { testimonial: Testimonial | nu
     role: testimonial?.role || "",
     photo: testimonial?.photo || null,
     quote: testimonial?.quote || "",
-    status: testimonial?.status || "published",
+    status: testimonial?.status || "active",
     display_order: testimonial?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -155,7 +155,8 @@ export function TestimonialForm({ testimonial }: { testimonial: Testimonial | nu
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "published", label: "Published" },
+                  { value: "active", label: "Active (Published)" },
+                  { value: "inactive", label: "Inactive (Draft)" },
                   { value: "archived", label: "Archived" },
                 ]}
               />

@@ -18,11 +18,11 @@ export default async function AthletesPage() {
   return (
     <PublicShell>
       <PageHero
-        eyebrow="Athletes"
-        title={<>Talent <span className="text-gold-gradient">in motion</span></>}
-        subtitle="Meet the athletes whose journeys we support across India."
-        image="/assets/hero-athletes.jpg"
-        alt="Athletes in action under golden light"
+        eyebrow="Popular Games"
+        title={<>Popular <span className="text-gold-gradient">Sports Disciplines</span></>}
+        subtitle="Explore the popular games, training centres, and upcoming championship events across India."
+        image="/assets/facility.jpg"
+        alt="Modern sports facility and arena"
       />
 
       <section className="mx-auto max-w-7xl px-5 py-24">

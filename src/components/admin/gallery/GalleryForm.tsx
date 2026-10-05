@@ -20,7 +20,7 @@ export function GalleryForm({ item }: { item: GalleryItem | null }) {
     image_url: item?.image_url || "",
     description: item?.description || "",
     category: item?.category || "",
-    status: item?.status || "published",
+    status: item?.status || "active",
     display_order: item?.display_order ?? 0,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -167,7 +167,8 @@ export function GalleryForm({ item }: { item: GalleryItem | null }) {
                 value={form.status}
                 onChange={(e) => update("status", e.target.value as any)}
                 options={[
-                  { value: "published", label: "Published" },
+                  { value: "active", label: "Active (Published)" },
+                  { value: "inactive", label: "Inactive (Draft)" },
                   { value: "archived", label: "Archived" },
                 ]}
               />

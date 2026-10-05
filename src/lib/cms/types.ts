@@ -41,7 +41,7 @@ export type Event = {
   id: string; title: string; slug: string; description: string | null
   event_date: string | null; start_time: string | null; end_time: string | null
   location: string | null; featured_image: string | null; registration_url: string | null
-  status: 'draft' | 'published' | 'archived'; created_at: string; updated_at: string
+  status: 'upcoming' | 'live' | 'completed' | 'cancelled' | 'draft' | 'published' | 'archived'; created_at: string; updated_at: string
 }
 
 export type Programme = {
@@ -55,20 +55,20 @@ export type Athlete = {
   id: string; name: string; slug: string; photo: string | null; sport: string | null
   category: string | null; biography: string | null; achievements: string | null
   profile_details: string | null; nationality: string | null
-  status: 'draft' | 'published' | 'archived'; display_order: number
+  status: 'active' | 'inactive' | 'retired' | 'draft' | 'published' | 'archived'; display_order: number
   created_at: string; updated_at: string
 }
 
 export type Team = {
   id: string; name: string; slug: string; sport: string | null; description: string | null
   logo: string | null; cover_image: string | null
-  status: 'draft' | 'published' | 'archived'; display_order: number
+  status: 'active' | 'inactive' | 'draft' | 'published' | 'archived'; display_order: number
   created_at: string; updated_at: string
 }
 
 export type Testimonial = {
   id: string; name: string; role: string | null; photo: string | null; quote: string | null
-  status: 'draft' | 'published' | 'archived'; display_order: number
+  status: 'active' | 'inactive' | 'archived' | 'draft' | 'published'; display_order: number
   created_at: string; updated_at: string
   slug?: string | null
 }
@@ -76,7 +76,7 @@ export type Testimonial = {
 export type GalleryItem = {
   id: string; title: string; image_url: string; description: string | null
   category: string | null; alt_text: string | null; slug?: string | null
-  status: 'draft' | 'published' | 'archived'; display_order: number
+  status: 'active' | 'inactive' | 'archived' | 'draft' | 'published'; display_order: number
   created_at: string; updated_at: string
 }
 
