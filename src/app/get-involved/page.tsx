@@ -61,6 +61,28 @@ export default async function GetInvolvedPage() {
           ))}
           <Reveal delay={450}>
             <Link
+              href="/donate"
+              className="flex h-full flex-col justify-between rounded-sm bg-gradient-gold p-8 text-navy-deep transition-transform duration-500 hover:-translate-y-2 shadow-xl shadow-primary/20"
+            >
+              <div>
+                <span className="inline-block text-[10px] font-black uppercase tracking-widest bg-navy-deep text-primary px-2.5 py-1 rounded-sm mb-3">
+                  Online Contribution
+                </span>
+                <span className="font-display text-3xl leading-tight block">
+                  Donate to Athletes
+                </span>
+                <p className="mt-2 text-xs text-navy-deep/80 leading-relaxed font-semibold">
+                  Fund training, gear, nutrition, and tournament travel via Razorpay. 80G tax benefit eligible.
+                </p>
+              </div>
+              <div className="flex items-center justify-between mt-6 pt-3 border-t border-navy-deep/20 font-black text-xs uppercase tracking-wider">
+                <span>Donate Now</span>
+                <ArrowRight className="h-5 w-5" />
+              </div>
+            </Link>
+          </Reveal>
+          <Reveal delay={520}>
+            <Link
               href="/contact"
               className="flex h-full flex-col justify-between rounded-sm bg-primary p-8 text-primary-foreground transition-transform duration-500 hover:-translate-y-2"
             >

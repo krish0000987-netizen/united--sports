@@ -13,7 +13,7 @@ import {
 } from '@/lib/cms/server'
 import PublicShell from '@/components/site/PublicShell'
 import { Reveal } from '@/components/site/Reveal'
-import { ArrowRight, MapPin } from 'lucide-react'
+import { ArrowRight, MapPin, Heart } from 'lucide-react'
 import { formatDate } from '@/lib/format'
 
 export const revalidate = 60
@@ -70,6 +70,13 @@ export default async function HomePage() {
                 {hero.heading}
               </h1>
               <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 w-full sm:w-auto">
+                <Link
+                  href="/donate"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-sm bg-gradient-gold px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-black uppercase tracking-[0.14em] text-navy-deep shadow-lg shadow-primary/30 transition-transform duration-300 hover:-translate-y-1 text-center"
+                >
+                  <Heart className="h-4 w-4 fill-navy-deep text-navy-deep" />
+                  <span>Donate to Athletes</span>
+                </Link>
                 {hero.button_text && hero.button_url && (
                   <Link
                     href={hero.button_url}
