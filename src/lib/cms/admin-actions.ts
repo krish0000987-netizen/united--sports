@@ -776,18 +776,54 @@ export async function unpublishGalleryItem(id: string) {
 
 // ── CMS Pages ────────────────────────────────────────────────────────────────
 
+function normalizePageInput(input: Record<string, unknown>): Record<string, unknown> {
+  const {
+    meta_title,
+    meta_description,
+    seo_title,
+    seo_description,
+    featured_image,
+    ...rest
+  } = input
+  const payload: Record<string, unknown> = {
+    ...rest,
+  }
+  if (seo_title !== undefined || meta_title !== undefined) {
+    payload.seo_title = (seo_title ?? meta_title ?? null) as unknown
+  }
+  if (seo_description !== undefined || meta_description !== undefined) {
+    payload.seo_description = (seo_description ?? meta_description ?? null) as unknown
+  }
+  if (featured_image !== undefined) {
+    payload.canonical_url = featured_image
+  }
+  return payload
+}
+
+function normalizePageRow(row: any) {
+  if (!row) return null
+  return {
+    ...row,
+    meta_title: row.seo_title || row.meta_title || null,
+    meta_description: row.seo_description || row.meta_description || null,
+    featured_image: row.featured_image || row.canonical_url || null,
+  }
+}
+
 export async function createCmsPage(input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase.from("pages").insert(input).select().single()
+  const payload = normalizePageInput(input)
+  const { data, error } = await supabase.from("pages").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  return { data: normalizePageRow(data), error: null }
 }
 
 export async function updateCmsPage(id: string, input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase.from("pages").update(input).eq("id", id).select().single()
+  const payload = normalizePageInput(input)
+  const { data, error } = await supabase.from("pages").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  return { data: normalizePageRow(data), error: null }
 }
 
 export async function deleteCmsPage(id: string): Promise<Result<null>> {
@@ -801,14 +837,14 @@ export async function getCmsPageById(id: string) {
   const supabase = await createClient()
   const { data, error } = await supabase.from("pages").select("*").eq("id", id).maybeSingle()
   if (error) { console.error("[cms] getCmsPageById:", error.message); return null }
-  return data
+  return normalizePageRow(data)
 }
 
 export async function getAllCmsPages() {
   const supabase = await createClient()
   const { data, error } = await supabase.from("pages").select("*").order("updated_at", { ascending: false })
   if (error) { console.error("[cms] getAllCmsPages:", error.message); return [] }
-  return data || []
+  return (data || []).map(normalizePageRow)
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -931,26 +967,64 @@ export async function getFooterLinks(sectionId?: string) {
 
 export async function getHomepageHero() {
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from("homepage_hero")
-    .select("*")
-    .order("display_order", { ascending: true })
-    .limit(1)
-    .maybeSingle()
-  if (error) { console.error("[cms] getHomepageHero:", error.message); return null }
-  return data
+  try {
+    const { data: row } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "homepage_hero")
+      .maybeSingle()
+    if (row?.value) {
+      return {
+        id: "homepage_hero_singleton",
+        ...row.value,
+      }
+    }
+    return {
+      id: "homepage_hero_singleton",
+      heading: "Building a Stronger Ecosystem for India's Athletes.",
+      subheading: "UnitedAthletes for India Foundation",
+      button_text: "Explore Opportunities",
+      button_url: "/programmes",
+      secondary_button_text: "Donate to Athletes",
+      secondary_button_url: "/donate",
+      background_image: "/assets/facility.jpg",
+      overlay_opacity: 0.6,
+      is_enabled: true,
+      stat_1_val: "14+",
+      stat_1_lbl: "Sporting disciplines",
+      stat_2_val: "6",
+      stat_2_lbl: "Core programmes",
+      stat_3_val: "1",
+      stat_3_lbl: "Athlete-first promise",
+    }
+  } catch {
+    return null
+  }
 }
 
 export async function updateHomepageHero(id: string, input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase
-    .from("homepage_hero")
-    .update(input)
-    .eq("id", id)
-    .select()
-    .single()
-  if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  try {
+    const { data: existing } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "homepage_hero")
+      .maybeSingle()
+    const merged = {
+      ...(existing?.value || {}),
+      ...input,
+      id: "homepage_hero_singleton",
+    }
+    const { error } = await supabase.from("site_settings").upsert({
+      key: "homepage_hero",
+      value: merged,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "key" })
+    if (error) return { data: null, error: errMessage(error) }
+    return { data: { id: "homepage_hero_singleton", ...merged }, error: null }
+  } catch (err: any) {
+    return { data: null, error: err?.message || "Failed to update homepage hero" }
+  }
 }
 
 export async function getHomepageSections() {

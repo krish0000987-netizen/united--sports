@@ -51,15 +51,23 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
 }
 
 export const DEFAULT_HOMEPAGE_HERO: HomepageHero = {
-  id: "default-hero",
-  heading: "Empowering India's Sporting Future",
+  id: "homepage_hero_singleton",
+  heading: "Building a Stronger Ecosystem for India's Athletes.",
   subheading: "UnitedAthletes for India Foundation",
-  button_text: "Explore Programmes",
+  button_text: "Explore Opportunities",
   button_url: "/programmes",
+  secondary_button_text: "Donate to Athletes",
+  secondary_button_url: "/donate",
   background_image: "/assets/facility.jpg",
   overlay_opacity: 0.6,
   is_enabled: true,
   display_order: 1,
+  stat_1_val: "14+",
+  stat_1_lbl: "Sporting disciplines",
+  stat_2_val: "6",
+  stat_2_lbl: "Core programmes",
+  stat_3_val: "1",
+  stat_3_lbl: "Athlete-first promise",
 }
 
 export const DEFAULT_HOMEPAGE_SECTIONS: HomepageSection[] = [
@@ -618,12 +626,26 @@ function sanitizePageContent(raw: unknown): string | null {
   }
   if (raw && typeof raw === "object") {
     const html = (raw as Record<string, unknown>).html
-    if (typeof html === "string") {
-      const trimmed = html.trim()
-      return trimmed && trimmed !== "[object Object]" ? trimmed : null
+    if (typeof html === "string" && html.trim() && html.trim() !== "[object Object]") {
+      return html.trim()
+    }
+    try {
+      return JSON.stringify(raw)
+    } catch {
+      return null
     }
   }
   return null
+}
+
+function normalizeServerPage(row: any): Page {
+  return {
+    ...row,
+    meta_title: row.seo_title || row.meta_title || null,
+    meta_description: row.seo_description || row.meta_description || null,
+    featured_image: row.featured_image || row.canonical_url || null,
+    content: sanitizePageContent(row.content),
+  }
 }
 
 export async function getPagesServer(): Promise<Page[]> {
@@ -635,10 +657,7 @@ export async function getPagesServer(): Promise<Page[]> {
       .select("*")
       .order("updated_at", { ascending: false })
     if (error || !data) return []
-    return (data as Page[]).map((p) => ({
-      ...p,
-      content: sanitizePageContent(p.content),
-    }))
+    return (data as any[]).map(normalizeServerPage)
   } catch {
     return []
   }
@@ -655,11 +674,7 @@ export async function getPageBySlugServer(slug: string): Promise<Page | null> {
       .eq("status", "published")
       .maybeSingle()
     if (error || !data) return null
-    const page = data as Page
-    return {
-      ...page,
-      content: sanitizePageContent(page.content),
-    }
+    return normalizeServerPage(data)
   } catch {
     return null
   }
@@ -987,15 +1002,19 @@ export async function getHomepageHeroServer(): Promise<HomepageHero | null> {
   try {
     const c = createPublicClient()
     if (!c) return DEFAULT_HOMEPAGE_HERO
-    const { data, error } = await c
-      .from("homepage_hero")
-      .select("*")
-      .eq("is_enabled", true)
-      .order("display_order", { ascending: true })
-      .limit(1)
+    const { data: row } = await c
+      .from("site_settings")
+      .select("value")
+      .eq("key", "homepage_hero")
       .maybeSingle()
-    if (error || !data) return DEFAULT_HOMEPAGE_HERO
-    return data as HomepageHero
+    if (row?.value) {
+      return {
+        ...DEFAULT_HOMEPAGE_HERO,
+        ...row.value,
+        id: row.value.id || "homepage_hero_singleton",
+      } as HomepageHero
+    }
+    return DEFAULT_HOMEPAGE_HERO
   } catch {
     return DEFAULT_HOMEPAGE_HERO
   }

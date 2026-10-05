@@ -478,16 +478,42 @@ export async function unpublishGalleryItem(id: string) {
 
 // ── CMS Pages ────────────────────────────────────────────────────────────────
 
+function normalizePageInput(input: Record<string, unknown>): Record<string, unknown> {
+  const {
+    meta_title,
+    meta_description,
+    seo_title,
+    seo_description,
+    featured_image,
+    ...rest
+  } = input
+  const payload: Record<string, unknown> = {
+    ...rest,
+  }
+  if (seo_title !== undefined || meta_title !== undefined) {
+    payload.seo_title = (seo_title ?? meta_title ?? null) as unknown
+  }
+  if (seo_description !== undefined || meta_description !== undefined) {
+    payload.seo_description = (seo_description ?? meta_description ?? null) as unknown
+  }
+  if (featured_image !== undefined) {
+    payload.canonical_url = featured_image
+  }
+  return payload
+}
+
 export async function createCmsPage(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("pages").insert(input).select().single()
+  const payload = normalizePageInput(input)
+  const { data, error } = await supabase.from("pages").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateCmsPage(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("pages").update(input).eq("id", id).select().single()
+  const payload = normalizePageInput(input)
+  const { data, error } = await supabase.from("pages").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -570,14 +596,27 @@ export async function deleteFooterLink(id: string): Promise<Result<never>> {
 
 export async function updateHomepageHero(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase
-    .from("homepage_hero")
-    .update(input)
-    .eq("id", id)
-    .select()
-    .single()
-  if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  try {
+    const { data: existing } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "homepage_hero")
+      .maybeSingle()
+    const merged = {
+      ...(existing?.value || {}),
+      ...input,
+      id: "homepage_hero_singleton",
+    }
+    const { error } = await supabase.from("site_settings").upsert({
+      key: "homepage_hero",
+      value: merged,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "key" })
+    if (error) return { data: null, error: errMessage(error) }
+    return { data: { id: "homepage_hero_singleton", ...merged } as any, error: null }
+  } catch (err: any) {
+    return { data: null, error: err?.message || "Failed to update homepage hero" }
+  }
 }
 
 export async function updateHomepageSection(id: string, input: Record<string, unknown>): Promise<Result> {

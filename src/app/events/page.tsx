@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, MapPin } from 'lucide-react'
-import { getEventsServer } from '@/lib/cms/server'
+import { getEventsServer, getPageBySlugServer } from '@/lib/cms/server'
 import PublicShell from '@/components/site/PublicShell'
 import { PageHero } from '@/components/site/PageHero'
 import { Reveal } from '@/components/site/Reveal'
@@ -9,21 +9,27 @@ import { formatDate, formatTime } from '@/lib/format'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Events',
-  description: 'Meets, trials, camps and community gatherings from UnitedAthletes.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlugServer('events')
+  return {
+    title: page?.meta_title || 'Events & Championships',
+    description: page?.meta_description || 'Meets, trials, camps and community gatherings from UnitedAthletes.',
+  }
 }
 
 export default async function EventsPage() {
-  const events = await getEventsServer({ status: 'published' })
+  const [events, page] = await Promise.all([
+    getEventsServer({ status: 'published' }),
+    getPageBySlugServer('events'),
+  ])
 
   return (
     <PublicShell>
       <PageHero
-        eyebrow="Events"
+        eyebrow={page?.excerpt || "Events"}
         title={<>Mark your <span className="text-gold-gradient">calendar</span></>}
-        subtitle="Meets, trials, camps and community gatherings — be part of the action."
-        image="/assets/facility.jpg"
+        subtitle={page?.meta_description || page?.excerpt || "Meets, trials, camps and community gatherings — be part of the action."}
+        image={page?.featured_image || "/assets/facility.jpg"}
         alt="Modern indoor sports arena lit at night"
       />
 

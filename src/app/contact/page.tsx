@@ -1,6 +1,6 @@
 import { MapPin, Phone } from "lucide-react"
 
-import { getSiteSettingsServer } from "@/lib/cms/server"
+import { getSiteSettingsServer, getPageBySlugServer } from "@/lib/cms/server"
 import PublicShell from "@/components/site/PublicShell"
 import { PageHero } from "@/components/site/PageHero"
 import { Reveal } from "@/components/site/Reveal"
@@ -8,21 +8,48 @@ import { ContactForm } from "./ContactForm"
 
 export const revalidate = 60
 
-export const metadata = {
-  title: "Contact",
-  description: "Reach UnitedAthletes for India Foundation — athletes, coaches, organisations and supporters, we'd love to hear from you.",
+export async function generateMetadata() {
+  const page = await getPageBySlugServer("contact")
+  return {
+    title: page?.meta_title || "Contact",
+    description:
+      page?.meta_description ||
+      "Reach UnitedAthletes for India Foundation — athletes, coaches, organisations and supporters, we'd love to hear from you.",
+  }
 }
 
 export default async function ContactPage() {
-  const settings = await getSiteSettingsServer()
+  const [settings, page] = await Promise.all([
+    getSiteSettingsServer(),
+    getPageBySlugServer("contact"),
+  ])
+
+  let parsed: Record<string, any> = {}
+  if (typeof page?.content === "string" && page.content.trim()) {
+    try {
+      parsed = JSON.parse(page.content)
+    } catch {
+      // plain text or non-json
+    }
+  }
+
+  const heroEyebrow = parsed.hero_eyebrow || page?.excerpt || "Contact"
+  const heroSubtitle =
+    parsed.hero_subtitle ||
+    page?.excerpt ||
+    "Athletes, coaches, organisations and supporters — we'd love to hear from you."
+  const heroImage = page?.featured_image || parsed.hero_image || "/assets/facility.jpg"
+  const bannerHeading = parsed.banner_heading || "Together, we can build a"
+  const bannerHighlight = parsed.banner_highlight || "stronger sporting India."
+  const bannerTagline = parsed.banner_tagline || "Empowering Athletes. Enabling Dreams."
 
   return (
     <PublicShell>
       <PageHero
-        eyebrow="Contact"
+        eyebrow={heroEyebrow}
         title={<>Let&apos;s <span className="text-gold-gradient">talk sport</span></>}
-        subtitle="Athletes, coaches, organisations and supporters — we'd love to hear from you."
-        image="/assets/facility.jpg"
+        subtitle={heroSubtitle}
+        image={heroImage}
         alt="Modern indoor sports arena lit at night"
       />
 
@@ -89,12 +116,12 @@ export default async function ContactPage() {
         <div className="mx-auto max-w-4xl px-5 py-24 text-center">
           <Reveal>
             <h2 className="text-4xl sm:text-5xl">
-              Together, we can build a{" "}
-              <span className="text-gold-gradient">stronger sporting India.</span>
+              {bannerHeading}{" "}
+              <span className="text-gold-gradient">{bannerHighlight}</span>
             </h2>
-            <p className="mt-8 font-display text-2xl">UnitedAthletes</p>
+            <p className="mt-8 font-display text-2xl">{settings?.site_name || "UnitedAthletes"}</p>
             <p className="mt-2 text-sm uppercase tracking-[0.28em] text-primary">
-              Empowering Athletes. Enabling Dreams.
+              {bannerTagline}
             </p>
           </Reveal>
         </div>

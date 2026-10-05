@@ -50,6 +50,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: Home,
     children: [
       { label: "Homepage", href: "/admin/homepage", icon: Home },
+      { label: "Pages (About, Contact, etc.)", href: "/admin/pages", icon: FileBox },
       { label: "Site Settings", href: "/admin/settings", icon: Settings },
       { label: "Navigation", href: "/admin/navigation", icon: Navigation },
       { label: "Footer", href: "/admin/footer", icon: PanelBottom },
@@ -67,15 +68,14 @@ const NAV_ITEMS: NavItem[] = [
     label: "Content",
     icon: FileText,
     children: [
-      { label: "Articles", href: "/admin/articles", icon: Newspaper },
-      { label: "Categories", href: "/admin/article-categories", icon: Tag },
-      { label: "Pages", href: "/admin/pages", icon: FileBox },
+      { label: "Popular Games & Sports", href: "/admin/athletes", icon: Trophy },
       { label: "Programmes", href: "/admin/programmes", icon: BookOpen },
-      { label: "Events", href: "/admin/events", icon: Calendar },
-      { label: "Athletes", href: "/admin/athletes", icon: Trophy },
-      { label: "Teams", href: "/admin/teams", icon: Users },
+      { label: "Events & Meets", href: "/admin/events", icon: Calendar },
+      { label: "Articles & News", href: "/admin/articles", icon: Newspaper },
+      { label: "Categories", href: "/admin/article-categories", icon: Tag },
       { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
       { label: "Gallery", href: "/admin/gallery", icon: Images },
+      { label: "Teams & Squads", href: "/admin/teams", icon: Users },
     ],
   },
   {

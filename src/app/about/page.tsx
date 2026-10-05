@@ -41,6 +41,27 @@ export default async function AboutPage() {
   const page = await getPageBySlugServer("about")
   if (page === null && false) notFound()
 
+  let parsed: Record<string, any> = {}
+  let isHtmlContent = false
+  if (typeof page?.content === "string" && page.content.trim()) {
+    try {
+      parsed = JSON.parse(page.content)
+    } catch {
+      // Content is HTML or markdown
+      isHtmlContent = true
+    }
+  }
+
+  const pageValues = Array.isArray(parsed.values) && parsed.values.length > 0 ? parsed.values : values
+  const pageProvide = Array.isArray(parsed.what_we_provide) && parsed.what_we_provide.length > 0 ? parsed.what_we_provide : provide
+  const missionText = parsed.mission || "To empower athletes by creating opportunities, providing resources, and building an ecosystem where sporting talent can thrive."
+  const visionText = parsed.vision || "A stronger India where every talented athlete has the opportunity, facilities, equipment and support needed to achieve their goals."
+  const storyTitle = parsed.story_title || "Talent can come from anywhere"
+  const storyBody = parsed.story_body || "UnitedAthletes for India Foundation is an athlete-focused organisation committed to creating a stronger ecosystem for athletes across India.\n\nWe believe that talent can come from anywhere, but access to opportunities, facilities, equipment and support can determine how far that talent goes. UnitedAthletes works to provide athletes with the resources and opportunities they need to pursue excellence in sport."
+  const storyParagraphs = storyBody.split("\n\n").filter(Boolean)
+  const commitmentTitle = parsed.commitment_title || "We don't just support athletes. We create opportunities for them to move forward."
+  const commitmentBody = parsed.commitment_body || "UnitedAthletes is committed to building an ecosystem where athletes can focus on their passion, develop their abilities and move closer to achieving their dreams."
+
   return (
     <PublicShell>
       <PageHero
@@ -54,24 +75,19 @@ export default async function AboutPage() {
       <section className="mx-auto max-w-7xl px-5 py-24">
         <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <Reveal>
-            {typeof page?.content === "string" && page.content.trim().length > 0 && page.content.trim() !== "[object Object]" ? (
+            {isHtmlContent && page?.content ? (
               <div
                 className="cms-content max-w-none"
                 dangerouslySetInnerHTML={{ __html: page.content }}
               />
             ) : (
               <>
-                <h2 className="text-4xl sm:text-5xl">Talent can come from anywhere</h2>
-                <p className="mt-6 leading-relaxed text-muted-foreground">
-                  UnitedAthletes for India Foundation is an athlete-focused organisation
-                  committed to creating a stronger ecosystem for athletes across India.
-                </p>
-                <p className="mt-4 leading-relaxed text-muted-foreground">
-                  We believe that talent can come from anywhere, but access to
-                  opportunities, facilities, equipment and support can determine how far
-                  that talent goes. UnitedAthletes works to provide athletes with the
-                  resources and opportunities they need to pursue excellence in sport.
-                </p>
+                <h2 className="text-4xl sm:text-5xl">{storyTitle}</h2>
+                {storyParagraphs.map((para: string, i: number) => (
+                  <p key={i} className="mt-4 leading-relaxed text-muted-foreground first-of-type:mt-6">
+                    {para}
+                  </p>
+                ))}
               </>
             )}
           </Reveal>
@@ -94,11 +110,11 @@ export default async function AboutPage() {
           {[
             {
               label: "Our Mission",
-              text: "To empower athletes by creating opportunities, providing resources, and building an ecosystem where sporting talent can thrive.",
+              text: missionText,
             },
             {
               label: "Our Vision",
-              text: "A stronger India where every talented athlete has the opportunity, facilities, equipment and support needed to achieve their goals.",
+              text: visionText,
             },
           ].map((b, i) => (
             <Reveal key={b.label} delay={i * 120}>
@@ -121,8 +137,8 @@ export default async function AboutPage() {
           <h2 className="mt-6 text-4xl sm:text-5xl">What we stand on</h2>
         </Reveal>
         <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {values.map((v, i) => (
-            <Reveal key={v.title} delay={i * 90}>
+          {pageValues.map((v: any, i: number) => (
+            <Reveal key={v.title || i} delay={i * 90}>
               <article className="surface-card h-full rounded-sm p-8 transition-transform duration-500 hover:-translate-y-2">
                 <span className="font-display text-sm tracking-[0.3em] text-primary">
                   {String(i + 1).padStart(2, "0")}
@@ -150,8 +166,8 @@ export default async function AboutPage() {
           </Reveal>
           <Reveal delay={140}>
             <ul className="divide-y divide-border border-y border-border">
-              {provide.map((p) => (
-                <li key={p} className="flex items-center gap-4 py-5">
+              {pageProvide.map((p: string, i: number) => (
+                <li key={i} className="flex items-center gap-4 py-5">
                   <Check className="h-5 w-5 shrink-0 text-primary" />
                   <span className="text-lg">{p}</span>
                 </li>
@@ -165,13 +181,10 @@ export default async function AboutPage() {
         <Reveal>
           <p className="eyebrow">Our Commitment</p>
           <h2 className="mt-6 text-4xl sm:text-5xl">
-            We don&apos;t just support athletes.{" "}
-            <span className="text-gold-gradient">We create opportunities for them to move forward.</span>
+            {commitmentTitle}
           </h2>
           <p className="mx-auto mt-6 max-w-2xl leading-relaxed text-muted-foreground">
-            UnitedAthletes is committed to building an ecosystem where athletes can
-            focus on their passion, develop their abilities and move closer to
-            achieving their dreams.
+            {commitmentBody}
           </p>
           <Link
             href="/get-involved"

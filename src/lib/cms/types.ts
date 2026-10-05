@@ -84,6 +84,10 @@ export type HomepageHero = {
   id: string; heading: string; subheading: string | null; button_text: string | null
   button_url: string | null; background_image: string | null; overlay_opacity: number
   is_enabled: boolean; display_order: number
+  secondary_button_text?: string | null; secondary_button_url?: string | null
+  stat_1_val?: string | null; stat_1_lbl?: string | null
+  stat_2_val?: string | null; stat_2_lbl?: string | null
+  stat_3_val?: string | null; stat_3_lbl?: string | null
 }
 
 export type HomepageSection = {

@@ -86,19 +86,28 @@ export default async function HomePage() {
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                 )}
-                <Link
-                  href="/programmes"
-                  className="inline-flex items-center justify-center gap-3 rounded-sm border border-primary/50 px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:bg-primary/10 text-center"
-                >
-                  Explore Opportunities
-                </Link>
+                {hero.secondary_button_text && hero.secondary_button_url ? (
+                  <Link
+                    href={hero.secondary_button_url}
+                    className="inline-flex items-center justify-center gap-3 rounded-sm border border-primary/50 px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:bg-primary/10 text-center"
+                  >
+                    {hero.secondary_button_text}
+                  </Link>
+                ) : (
+                  <Link
+                    href="/programmes"
+                    className="inline-flex items-center justify-center gap-3 rounded-sm border border-primary/50 px-6 sm:px-8 py-3.5 sm:py-4 text-sm font-extrabold uppercase tracking-[0.14em] text-primary transition-colors duration-300 hover:bg-primary/10 text-center"
+                  >
+                    Explore Opportunities
+                  </Link>
+                )}
               </div>
 
               <dl className="mt-12 sm:mt-16 grid max-w-2xl grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 border-t border-border pt-6 sm:pt-8">
                 {[
-                  { k: "14+", v: "Sporting disciplines" },
-                  { k: "6", v: "Core programmes" },
-                  { k: "1", v: "Athlete-first promise" },
+                  { k: hero.stat_1_val || "14+", v: hero.stat_1_lbl || "Sporting disciplines" },
+                  { k: hero.stat_2_val || "6", v: hero.stat_2_lbl || "Core programmes" },
+                  { k: hero.stat_3_val || "1", v: hero.stat_3_lbl || "Athlete-first promise" },
                 ].map((s) => (
                   <div key={s.v}>
                     <dt className="font-display text-3xl sm:text-4xl text-primary">{s.k}</dt>
@@ -386,7 +395,17 @@ export default async function HomePage() {
               </section>
             )
 
-          case 'focus':
+          case 'focus': {
+            const defaultPillars = [
+              { n: "01", title: "Sports Development", text: "Supporting athletes across India in their journey from potential to national performance.", img: "/assets/support.jpg", alt: "Sports training and athletics development" },
+              { n: "02", title: "Facilities", text: "Helping athletes access quality sports infrastructure and world-class training environments.", img: "/assets/facility.jpg", alt: "Modern indoor sports arena" },
+              { n: "03", title: "Equipment", text: "Providing access to essential tournament-grade sports equipment and resources.", img: "/assets/equipment.jpg", alt: "Sports equipment" },
+              { n: "04", title: "Opportunities", text: "Creating pathways for youth to showcase talent and compete in state and national championships.", img: "/assets/community.jpg", alt: "Athletes in a huddle" },
+            ]
+            const pillars = (Array.isArray(section.content?.pillars) && section.content.pillars.length > 0)
+              ? section.content.pillars
+              : defaultPillars
+
             return (
               <section key={section.id} className="mx-auto max-w-7xl px-5 py-24">
                 <Reveal>
@@ -395,25 +414,20 @@ export default async function HomePage() {
                   <h2 className="mt-6 max-w-2xl text-4xl sm:text-5xl">{section.title || 'Four pillars of sporting excellence'}</h2>
                 </Reveal>
                 <div className="mt-14 grid gap-8 md:grid-cols-2">
-                  {[
-                    { n: "01", title: "Sports Development", text: "Supporting athletes across India in their journey from potential to national performance.", img: "/assets/support.jpg", alt: "Sports training and athletics development" },
-                    { n: "02", title: "Facilities", text: "Helping athletes access quality sports infrastructure and world-class training environments.", img: "/assets/facility.jpg", alt: "Modern indoor sports arena" },
-                    { n: "03", title: "Equipment", text: "Providing access to essential tournament-grade sports equipment and resources.", img: "/assets/equipment.jpg", alt: "Sports equipment" },
-                    { n: "04", title: "Opportunities", text: "Creating pathways for youth to showcase talent and compete in state and national championships.", img: "/assets/community.jpg", alt: "Athletes in a huddle" },
-                  ].map((f, i) => (
-                    <Reveal key={f.title} delay={i * 100}>
+                  {pillars.map((f: any, i: number) => (
+                    <Reveal key={f.title || i} delay={i * 100}>
                       <article className="group relative h-[26rem] overflow-hidden rounded-sm border border-border">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={f.img}
-                          alt={f.alt}
+                          src={f.img || "/assets/facility.jpg"}
+                          alt={f.alt || f.title || "Focus pillar"}
                           loading="lazy"
                           className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-[1200ms] group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/70 to-transparent" />
                         <div className="relative flex h-full flex-col justify-end p-8">
                           <span className="font-display text-sm tracking-[0.3em] text-primary">
-                            {f.n}
+                            {f.n || String(i + 1).padStart(2, "0")}
                           </span>
                           <h3 className="mt-3 text-3xl">{f.title}</h3>
                           <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
@@ -426,6 +440,7 @@ export default async function HomePage() {
                 </div>
               </section>
             )
+          }
 
           case 'sports_marquee':
           case 'marquee':

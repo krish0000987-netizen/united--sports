@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { getArticlesServer } from '@/lib/cms/server'
+import { getArticlesServer, getPageBySlugServer } from '@/lib/cms/server'
 import PublicShell from '@/components/site/PublicShell'
 import { PageHero } from '@/components/site/PageHero'
 import { Reveal } from '@/components/site/Reveal'
@@ -9,21 +9,27 @@ import { formatDate } from '@/lib/format'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'News & Updates',
-  description: 'The latest news, updates, and stories from the UnitedAthletes community.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlugServer('news')
+  return {
+    title: page?.meta_title || 'News & Updates',
+    description: page?.meta_description || 'The latest news, updates, and stories from the UnitedAthletes community.',
+  }
 }
 
 export default async function NewsPage() {
-  const articles = await getArticlesServer({ status: 'published' })
+  const [articles, page] = await Promise.all([
+    getArticlesServer({ status: 'published' }),
+    getPageBySlugServer('news'),
+  ])
 
   return (
     <PublicShell>
       <PageHero
-        eyebrow="News"
+        eyebrow={page?.excerpt || "News"}
         title={<>Latest news & <span className="text-gold-gradient">updates</span></>}
-        subtitle="Stories, announcements and insights from the UnitedAthletes community."
-        image="/assets/support.jpg"
+        subtitle={page?.meta_description || page?.excerpt || "Stories, announcements and insights from the UnitedAthletes community."}
+        image={page?.featured_image || "/assets/support.jpg"}
         alt="Coach and athlete clasping hands"
       />
 

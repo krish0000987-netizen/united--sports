@@ -9,18 +9,9 @@ import { ImageUploader } from "@/components/admin/ImageUploader"
 import { toast } from "@/components/ui/toast"
 import { updateHomepageHero, createActivityLog, getCurrentUser } from "@/lib/cms/client-actions"
 
-type Hero = {
-  id: string
-  heading: string
-  subheading: string | null
-  button_text: string | null
-  button_url: string | null
-  background_image: string | null
-  overlay_opacity: number | null
-  is_enabled: boolean
-}
+import { HomepageHero } from "@/lib/cms/types"
 
-export function HomepageHeroEditor({ hero }: { hero: Hero | null }) {
+export function HomepageHeroEditor({ hero }: { hero: HomepageHero | null }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({
@@ -28,6 +19,14 @@ export function HomepageHeroEditor({ hero }: { hero: Hero | null }) {
     subheading: hero?.subheading || "",
     button_text: hero?.button_text || "",
     button_url: hero?.button_url || "",
+    secondary_button_text: hero?.secondary_button_text || "",
+    secondary_button_url: hero?.secondary_button_url || "",
+    stat_1_val: hero?.stat_1_val || "14+",
+    stat_1_lbl: hero?.stat_1_lbl || "Sporting disciplines",
+    stat_2_val: hero?.stat_2_val || "6",
+    stat_2_lbl: hero?.stat_2_lbl || "Core programmes",
+    stat_3_val: hero?.stat_3_val || "1",
+    stat_3_lbl: hero?.stat_3_lbl || "Athlete-first promise",
     background_image: hero?.background_image || null,
     overlay_opacity: hero?.overlay_opacity ?? 0.5,
     is_enabled: hero?.is_enabled ?? true,
@@ -53,6 +52,14 @@ export function HomepageHeroEditor({ hero }: { hero: Hero | null }) {
         subheading: form.subheading || null,
         button_text: form.button_text || null,
         button_url: form.button_url || null,
+        secondary_button_text: form.secondary_button_text || null,
+        secondary_button_url: form.secondary_button_url || null,
+        stat_1_val: form.stat_1_val || null,
+        stat_1_lbl: form.stat_1_lbl || null,
+        stat_2_val: form.stat_2_val || null,
+        stat_2_lbl: form.stat_2_lbl || null,
+        stat_3_val: form.stat_3_val || null,
+        stat_3_lbl: form.stat_3_lbl || null,
         background_image: form.background_image || null,
         overlay_opacity: form.overlay_opacity,
         is_enabled: form.is_enabled,
@@ -98,20 +105,99 @@ export function HomepageHeroEditor({ hero }: { hero: Hero | null }) {
           onChange={(e) => update("subheading", e.target.value)}
           rows={3}
         />
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Input
-            label="Button Text"
-            value={form.button_text}
-            onChange={(e) => update("button_text", e.target.value)}
-            placeholder="e.g. Get Involved"
-          />
-          <Input
-            label="Button URL"
-            value={form.button_url}
-            onChange={(e) => update("button_url", e.target.value)}
-            placeholder="/get-involved or https://..."
-          />
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+            Primary Action Button
+          </label>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input
+              label="Primary Button Text"
+              value={form.button_text}
+              onChange={(e) => update("button_text", e.target.value)}
+              placeholder="e.g. Get Involved"
+            />
+            <Input
+              label="Primary Button URL"
+              value={form.button_url}
+              onChange={(e) => update("button_url", e.target.value)}
+              placeholder="/get-involved or https://..."
+            />
+          </div>
         </div>
+
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+            Secondary Action Button (Optional)
+          </label>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input
+              label="Secondary Button Text"
+              value={form.secondary_button_text}
+              onChange={(e) => update("secondary_button_text", e.target.value)}
+              placeholder="e.g. Explore Opportunities"
+            />
+            <Input
+              label="Secondary Button URL"
+              value={form.secondary_button_url}
+              onChange={(e) => update("secondary_button_url", e.target.value)}
+              placeholder="/programmes or https://..."
+            />
+          </div>
+        </div>
+
+        <div className="border-t border-slate-200 pt-4">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+            Hero Highlight Counters (Below Buttons)
+          </label>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="space-y-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span className="text-xs font-bold text-slate-600">Stat 1</span>
+              <Input
+                label="Number / Metric"
+                value={form.stat_1_val}
+                onChange={(e) => update("stat_1_val", e.target.value)}
+                placeholder="14+"
+              />
+              <Input
+                label="Label"
+                value={form.stat_1_lbl}
+                onChange={(e) => update("stat_1_lbl", e.target.value)}
+                placeholder="Sporting disciplines"
+              />
+            </div>
+            <div className="space-y-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span className="text-xs font-bold text-slate-600">Stat 2</span>
+              <Input
+                label="Number / Metric"
+                value={form.stat_2_val}
+                onChange={(e) => update("stat_2_val", e.target.value)}
+                placeholder="6"
+              />
+              <Input
+                label="Label"
+                value={form.stat_2_lbl}
+                onChange={(e) => update("stat_2_lbl", e.target.value)}
+                placeholder="Core programmes"
+              />
+            </div>
+            <div className="space-y-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <span className="text-xs font-bold text-slate-600">Stat 3</span>
+              <Input
+                label="Number / Metric"
+                value={form.stat_3_val}
+                onChange={(e) => update("stat_3_val", e.target.value)}
+                placeholder="1"
+              />
+              <Input
+                label="Label"
+                value={form.stat_3_lbl}
+                onChange={(e) => update("stat_3_lbl", e.target.value)}
+                placeholder="Athlete-first promise"
+              />
+            </div>
+          </div>
+        </div>
+
         <ImageUploader
           value={form.background_image}
           onChange={(url) => update("background_image", url)}

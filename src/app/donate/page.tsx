@@ -4,6 +4,7 @@ import { PageHero } from "@/components/site/PageHero"
 import { Reveal } from "@/components/site/Reveal"
 import { DonationForm } from "@/components/site/DonationForm"
 import { getPublicRazorpayConfig } from "@/lib/cms/donations"
+import { getPageBySlugServer } from "@/lib/cms/server"
 import {
   Trophy,
   Dumbbell,
@@ -18,10 +19,14 @@ import {
 
 export const dynamic = "force-dynamic"
 
-export const metadata: Metadata = {
-  title: "Donate & Support Indian Athletes",
-  description:
-    "Contribute directly to training, equipment, tournament travel, and nutrition for aspiring and elite athletes across India. Powered by Razorpay with 80G tax benefits.",
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlugServer("donate")
+  return {
+    title: page?.meta_title || "Donate & Support Indian Athletes",
+    description:
+      page?.meta_description ||
+      "Contribute directly to training, equipment, tournament travel, and nutrition for aspiring and elite athletes across India. Powered by Razorpay with 80G tax benefits.",
+  }
 }
 
 const IMPACT_TIERS = [
@@ -75,20 +80,44 @@ const FAQS = [
 ]
 
 export default async function DonatePage() {
-  const config = await getPublicRazorpayConfig()
+  const [config, page] = await Promise.all([
+    getPublicRazorpayConfig(),
+    getPageBySlugServer("donate"),
+  ])
+
+  let parsed: Record<string, any> = {}
+  if (typeof page?.content === "string" && page.content.trim()) {
+    try {
+      parsed = JSON.parse(page.content)
+    } catch {
+      // ignore
+    }
+  }
+
+  const heroEyebrow = parsed.hero_eyebrow || page?.excerpt || "Fuel India's Sporting Journey"
+  const heroSubtitle =
+    parsed.hero_subtitle ||
+    page?.excerpt ||
+    "Every champion begins with an opportunity. Your contribution provides the coaching, equipment, nutrition, and tournament access India's talented athletes need to reach the podium."
+  const heroImage = page?.featured_image || parsed.hero_image || "/assets/support.jpg"
+  const impactSubheading = parsed.impact_subheading || "Direct Athlete Impact"
+  const impactHeading = parsed.impact_heading || "Where your contribution goes"
+  const impactBody =
+    parsed.impact_body ||
+    "Talent is distributed evenly across India, but resources and opportunities are not. By donating through UnitedAthletes Foundation, you remove the financial barriers that keep gifted youngsters from realizing their full sporting potential."
 
   return (
     <PublicShell>
       {/* Hero Section */}
       <PageHero
-        eyebrow="Fuel India's Sporting Journey"
+        eyebrow={heroEyebrow}
         title={
           <>
             Back our athletes. <span className="text-gold-gradient">Build champions.</span>
           </>
         }
-        subtitle="Every champion begins with an opportunity. Your contribution provides the coaching, equipment, nutrition, and tournament access India's talented athletes need to reach the podium."
-        image="/assets/support.jpg"
+        subtitle={heroSubtitle}
+        image={heroImage}
         alt="Athletes training on track under golden light"
       />
 
@@ -98,13 +127,13 @@ export default async function DonatePage() {
           {/* Left Column: Mission & Impact */}
           <div className="lg:col-span-5 space-y-8">
             <Reveal>
-              <p className="eyebrow">Direct Athlete Impact</p>
+              <p className="eyebrow">{impactSubheading}</p>
               <div className="rule-gold mt-4" />
               <h2 className="mt-4 text-3xl sm:text-4xl font-display uppercase tracking-wide leading-tight">
-                Where your <span className="text-gold-gradient">contribution goes</span>
+                {impactHeading}
               </h2>
               <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Talent is distributed evenly across India, but resources and opportunities are not. By donating through UnitedAthletes Foundation, you remove the financial barriers that keep gifted youngsters from realizing their full sporting potential.
+                {impactBody}
               </p>
             </Reveal>
 

@@ -79,9 +79,25 @@ function SectionEditor({
     section.content ? JSON.stringify(section.content, null, 2) : ""
   )
 
+  const isFocus = section.section_key === "focus"
+  const defaultPillars = [
+    { n: "01", title: "Sports Development", text: "Supporting athletes across India in their journey from potential to national performance.", img: "/assets/support.jpg", alt: "Sports training and athletics development" },
+    { n: "02", title: "Facilities", text: "Helping athletes access quality sports infrastructure and world-class training environments.", img: "/assets/facility.jpg", alt: "Modern indoor sports arena" },
+    { n: "03", title: "Equipment", text: "Providing access to essential tournament-grade sports equipment and resources.", img: "/assets/equipment.jpg", alt: "Sports equipment" },
+    { n: "04", title: "Opportunities", text: "Creating pathways for youth to showcase talent and compete in state and national championships.", img: "/assets/community.jpg", alt: "Athletes in a huddle" },
+  ]
+  const [pillars, setPillars] = useState<any[]>(
+    isFocus && Array.isArray(section.content?.pillars) && section.content.pillars.length > 0
+      ? section.content.pillars
+      : defaultPillars
+  )
+  const [tab, setTab] = useState<"visual" | "raw">("visual")
+
   async function handleSave() {
     let parsedContent: Record<string, any> = {}
-    if (contentText.trim()) {
+    if (isFocus && tab === "visual") {
+      parsedContent = { pillars }
+    } else if (contentText.trim()) {
       try {
         parsedContent = JSON.parse(contentText)
       } catch {
@@ -123,10 +139,10 @@ function SectionEditor({
       {expanded && (
         <CardBody className="border-t border-slate-100 space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
-            <Input label="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <Input label="Subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
+            <Input label="Section Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Input label="Subtitle / Eyebrow" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
           </div>
-          <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+          <Textarea label="Description / Summary" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
           <div className="grid sm:grid-cols-2 gap-4 items-end">
             <Input
               label="Display Order"
@@ -144,18 +160,91 @@ function SectionEditor({
               Visible on homepage
             </label>
           </div>
-          <Textarea
-            label="Content (JSON)"
-            value={contentText}
-            onChange={(e) => setContentText(e.target.value)}
-            rows={10}
-            className="font-mono text-xs"
-            hint="JSON object with section-specific fields (e.g. items, cta, etc.)"
-          />
+
+          {isFocus && (
+            <div className="border-t border-slate-200 pt-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                  Four Focus Pillars
+                </span>
+                <div className="flex bg-slate-100 p-0.5 rounded text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setTab("visual")}
+                    className={`px-2.5 py-1 rounded ${tab === "visual" ? "bg-white font-bold shadow-sm" : "text-slate-500"}`}
+                  >
+                    Visual Editor
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setContentText(JSON.stringify({ pillars }, null, 2))
+                      setTab("raw")
+                    }}
+                    className={`px-2.5 py-1 rounded ${tab === "raw" ? "bg-white font-bold shadow-sm" : "text-slate-500"}`}
+                  >
+                    Raw JSON
+                  </button>
+                </div>
+              </div>
+
+              {tab === "visual" && (
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {pillars.map((p, idx) => (
+                    <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2 text-xs">
+                      <div className="flex items-center justify-between font-bold text-slate-700">
+                        <span>Pillar {p.n || `#${idx + 1}`}</span>
+                      </div>
+                      <Input
+                        label="Pillar Title"
+                        value={p.title}
+                        onChange={(e) => {
+                          const copy = [...pillars]
+                          copy[idx] = { ...copy[idx], title: e.target.value }
+                          setPillars(copy)
+                        }}
+                      />
+                      <Textarea
+                        label="Description"
+                        value={p.text}
+                        onChange={(e) => {
+                          const copy = [...pillars]
+                          copy[idx] = { ...copy[idx], text: e.target.value }
+                          setPillars(copy)
+                        }}
+                        rows={2}
+                      />
+                      <Input
+                        label="Image URL"
+                        value={p.img}
+                        onChange={(e) => {
+                          const copy = [...pillars]
+                          copy[idx] = { ...copy[idx], img: e.target.value }
+                          setPillars(copy)
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {(!isFocus || tab === "raw") && (
+            <Textarea
+              label="Section Content (JSON)"
+              value={contentText}
+              onChange={(e) => setContentText(e.target.value)}
+              rows={8}
+              className="font-mono text-xs"
+              hint="JSON object with section-specific fields"
+            />
+          )}
+
           <div className="flex justify-end">
             <Button onClick={handleSave} variant="primary" disabled={saving}>
               {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-              {saving ? "Saving..." : "Save"}
+              {saving ? "Saving..." : "Save Section"}
             </Button>
           </div>
         </CardBody>

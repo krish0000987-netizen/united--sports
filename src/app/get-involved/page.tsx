@@ -29,6 +29,30 @@ const ways = [
 export default async function GetInvolvedPage() {
   const page = await getPageBySlugServer("get-involved")
 
+  let parsed: Record<string, any> = {}
+  let isHtmlContent = false
+  if (typeof page?.content === "string" && page.content.trim()) {
+    try {
+      parsed = JSON.parse(page.content)
+    } catch {
+      isHtmlContent = true
+    }
+  }
+
+  const waysIcons = [HeartHandshake, Dumbbell, Landmark, Building2, Users]
+  const rawWays = Array.isArray(parsed.ways) && parsed.ways.length > 0 ? parsed.ways : ways
+  const pageWays = rawWays.map((w: any, i: number) => ({
+    ...w,
+    icon: waysIcons[i % waysIcons.length],
+  }))
+
+  const waysTitle = parsed.ways_title || "Choose how you want to make a difference"
+  const waysEyebrow = parsed.ways_eyebrow || "Ways to Support"
+  const donationTitle = parsed.donation_title || "Donate to Athletes"
+  const donationDesc = parsed.donation_desc || "Fund training, gear, nutrition, and tournament travel via Razorpay. 80G tax benefit eligible."
+  const bannerHeading = parsed.banner_heading || "Every contribution becomes"
+  const bannerHighlight = parsed.banner_highlight || "training time, gear, and a chance to compete."
+
   return (
     <PublicShell>
       <PageHero
@@ -41,15 +65,15 @@ export default async function GetInvolvedPage() {
 
       <section className="mx-auto max-w-7xl px-5 py-24">
         <Reveal>
-          <p className="eyebrow">Ways to Support</p>
+          <p className="eyebrow">{waysEyebrow}</p>
           <div className="rule-gold mt-4" />
           <h2 className="mt-6 max-w-2xl text-4xl sm:text-5xl">
-            Choose how you want to make a difference
+            {waysTitle}
           </h2>
         </Reveal>
         <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {ways.map((w, i) => (
-            <Reveal key={w.title} delay={i * 90}>
+          {pageWays.map((w: any, i: number) => (
+            <Reveal key={w.title || i} delay={i * 90}>
               <article className="surface-card group h-full rounded-sm p-8 transition-transform duration-500 hover:-translate-y-2">
                 <w.icon className="h-7 w-7 text-primary transition-transform duration-500 group-hover:-translate-y-1" />
                 <h3 className="mt-6 text-2xl">{w.title}</h3>
@@ -69,10 +93,10 @@ export default async function GetInvolvedPage() {
                   Online Contribution
                 </span>
                 <span className="font-display text-3xl leading-tight block">
-                  Donate to Athletes
+                  {donationTitle}
                 </span>
                 <p className="mt-2 text-xs text-navy-deep/80 leading-relaxed font-semibold">
-                  Fund training, gear, nutrition, and tournament travel via Razorpay. 80G tax benefit eligible.
+                  {donationDesc}
                 </p>
               </div>
               <div className="flex items-center justify-between mt-6 pt-3 border-t border-navy-deep/20 font-black text-xs uppercase tracking-wider">
@@ -95,7 +119,7 @@ export default async function GetInvolvedPage() {
         </div>
       </section>
 
-      {typeof page?.content === "string" && page.content.trim().length > 0 && page.content.trim() !== "[object Object]" && (
+      {isHtmlContent && page?.content && (
         <section className="mx-auto max-w-4xl px-5 pb-24">
           <Reveal>
             <div
@@ -118,8 +142,8 @@ export default async function GetInvolvedPage() {
         <div className="relative mx-auto max-w-7xl px-5 py-24">
           <Reveal>
             <h2 className="max-w-3xl text-4xl sm:text-5xl">
-              Every contribution becomes{" "}
-              <span className="text-gold-gradient">training time, gear, and a chance to compete.</span>
+              {bannerHeading}{" "}
+              <span className="text-gold-gradient">{bannerHighlight}</span>
             </h2>
             <Link
               href="/contact"

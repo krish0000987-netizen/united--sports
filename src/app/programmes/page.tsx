@@ -1,28 +1,34 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
-import { getProgrammesServer } from '@/lib/cms/server'
+import { getProgrammesServer, getPageBySlugServer } from '@/lib/cms/server'
 import PublicShell from '@/components/site/PublicShell'
 import { PageHero } from '@/components/site/PageHero'
 import { Reveal } from '@/components/site/Reveal'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Programmes',
-  description: 'Explore the UnitedAthletes programmes supporting athletes across India.',
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlugServer('programmes')
+  return {
+    title: page?.meta_title || 'Programmes',
+    description: page?.meta_description || 'Explore the UnitedAthletes programmes supporting athletes across India.',
+  }
 }
 
 export default async function ProgrammesPage() {
-  const programmes = await getProgrammesServer({ status: 'published' })
+  const [programmes, page] = await Promise.all([
+    getProgrammesServer({ status: 'published' }),
+    getPageBySlugServer('programmes'),
+  ])
 
   return (
     <PublicShell>
       <PageHero
-        eyebrow="Programmes"
+        eyebrow={page?.excerpt || "Programmes"}
         title={<>What we <span className="text-gold-gradient">do</span></>}
-        subtitle="Everything an athlete needs to keep going — from facility access to equipment, community and opportunity."
-        image="/assets/programme-hero.jpg"
+        subtitle={page?.meta_description || page?.excerpt || "Everything an athlete needs to keep going — from facility access to equipment, community and opportunity."}
+        image={page?.featured_image || "/assets/programme-hero.jpg"}
         alt="Athletes training at a sports facility"
       />
 

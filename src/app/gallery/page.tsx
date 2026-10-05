@@ -1,26 +1,33 @@
-import { getGalleryItemsServer } from "@/lib/cms/server"
+import { getGalleryItemsServer, getPageBySlugServer } from "@/lib/cms/server"
 import PublicShell from "@/components/site/PublicShell"
 import { PageHero } from "@/components/site/PageHero"
 import { Reveal } from "@/components/site/Reveal"
+import { Metadata } from "next"
 
 export const revalidate = 60
 
-export const metadata = {
-  title: "Gallery",
-  description: "Moments captured from UnitedAthletes events, training, and community life.",
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlugServer('gallery')
+  return {
+    title: page?.meta_title || "Gallery",
+    description: page?.meta_description || "Moments captured from UnitedAthletes events, training, and community life.",
+  }
 }
 
 export default async function GalleryPage() {
-  const items = await getGalleryItemsServer({ status: "published" })
+  const [items, page] = await Promise.all([
+    getGalleryItemsServer({ status: "published" }),
+    getPageBySlugServer("gallery"),
+  ])
   const categories = [...new Set(items.map((g) => g.category).filter(Boolean))] as string[]
 
   return (
     <PublicShell>
       <PageHero
-        eyebrow="Gallery"
+        eyebrow={page?.excerpt || "Gallery"}
         title={<>Moments <span className="text-gold-gradient">Captured</span></>}
-        subtitle="A look at our events, athletes, training sessions, and community moments."
-        image="/assets/equipment.jpg"
+        subtitle={page?.meta_description || page?.excerpt || "A look at our events, athletes, training sessions, and community moments."}
+        image={page?.featured_image || "/assets/equipment.jpg"}
         alt="Premium sports equipment on a dark surface"
       />
 
