@@ -204,6 +204,7 @@ export const DEFAULT_NAVIGATION_ITEMS: NavigationItem[] = [
   { id: "nav-7", label: "Athletes", url: "/athletes", href: "/athletes", type: "header", target: "_self", display_order: 7, is_active: true, is_external: false, parent_id: null, created_at: "", updated_at: "" },
   { id: "nav-8", label: "Gallery", url: "/gallery", href: "/gallery", type: "header", target: "_self", display_order: 8, is_active: true, is_external: false, parent_id: null, created_at: "", updated_at: "" },
   { id: "nav-9", label: "Contact", url: "/contact", href: "/contact", type: "header", target: "_self", display_order: 9, is_active: true, is_external: false, parent_id: null, created_at: "", updated_at: "" },
+  { id: "nav-10", label: "Donate", url: "/donate", href: "/donate", type: "header", target: "_self", display_order: 10, is_active: true, is_external: false, parent_id: null, created_at: "", updated_at: "" },
 ]
 
 export const DEFAULT_FOOTER_SECTIONS: FooterSection[] = [

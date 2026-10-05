@@ -50,10 +50,29 @@ export function SiteHeader({
   const whatsapp = settings?.whatsapp || settings?.phone || ""
   const logo = settings?.logo_url || "/assets/logo-circle.png"
 
-  // Primary navigation links (exclude donate which has its own prominent CTA)
-  const navItems = nav.filter(
-    (item) => item.href !== "/donate" && item.label?.toLowerCase() !== "donate",
+  // Ensure Donate is always in the navbar items list
+  const hasDonate = nav.some(
+    (item) => item.href === "/donate" || item.label?.toLowerCase() === "donate",
   )
+  const navItems = hasDonate
+    ? nav
+    : [
+        ...nav,
+        {
+          id: "nav-donate-tab",
+          label: "Donate",
+          url: "/donate",
+          href: "/donate",
+          type: "header",
+          target: "_self",
+          display_order: 99,
+          is_active: true,
+          is_external: false,
+          parent_id: null,
+          created_at: "",
+          updated_at: "",
+        },
+      ]
 
   const isRouteActive = (href: string) => {
     if (href === "/") return pathname === "/"
@@ -102,13 +121,28 @@ export function SiteHeader({
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 2xl:gap-2 mx-auto">
             {navItems.map((item) => {
+              const isDonate = item.href === "/donate" || item.label?.toLowerCase() === "donate"
               const active = isRouteActive(item.href)
+
+              if (isDonate) {
+                return (
+                  <Link
+                    key={item.id}
+                    href="/donate"
+                    className="relative flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase tracking-wider rounded-md bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] hover:from-[#E8C44D] hover:via-[#D4AC2D] hover:to-[#C09623] text-[#0B1D3A] shadow-md shadow-[#C9A227]/30 hover:scale-105 active:scale-95 transition-all whitespace-nowrap ring-1 ring-amber-300/60 ml-1"
+                  >
+                    <Heart size={13} className="fill-[#0B1D3A] text-[#0B1D3A]" />
+                    <span>Donate</span>
+                  </Link>
+                )
+              }
+
               return (
                 <Link
                   key={item.id}
                   href={item.href}
                   className={cn(
-                    "relative px-2.5 py-1.5 xl:px-3 text-[11.5px] xl:text-[12.5px] 2xl:text-[13px] font-bold uppercase tracking-[0.06em] rounded-md transition-all duration-200 whitespace-nowrap",
+                    "relative px-2 py-1.5 xl:px-2.5 2xl:px-3 text-[11px] xl:text-[12px] 2xl:text-[13px] font-bold uppercase tracking-[0.06em] rounded-md transition-all duration-200 whitespace-nowrap",
                     active
                       ? "text-[#C9A227] bg-[#C9A227]/10"
                       : "text-slate-200/90 hover:text-white hover:bg-white/5",
@@ -116,7 +150,7 @@ export function SiteHeader({
                 >
                   <span>{item.label}</span>
                   {active && (
-                    <span className="absolute bottom-0 left-2.5 right-2.5 h-[2px] bg-gradient-to-r from-[#C9A227] via-amber-300 to-[#C9A227] rounded-full shadow-[0_0_8px_rgba(201,162,39,0.9)]" />
+                    <span className="absolute bottom-0 left-2 right-2 h-[2px] bg-gradient-to-r from-[#C9A227] via-amber-300 to-[#C9A227] rounded-full shadow-[0_0_8px_rgba(201,162,39,0.9)]" />
                   )}
                 </Link>
               )
@@ -138,7 +172,7 @@ export function SiteHeader({
 
             <Link
               href="/get-involved"
-              className="shrink-0 whitespace-nowrap rounded-md border border-[#C9A227]/60 bg-[#C9A227]/5 hover:bg-[#C9A227] hover:text-[#0B1D3A] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#C9A227] transition-all duration-200 shadow-sm"
+              className="hidden xl:inline-flex shrink-0 whitespace-nowrap rounded-md border border-[#C9A227]/60 bg-[#C9A227]/5 hover:bg-[#C9A227] hover:text-[#0B1D3A] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#C9A227] transition-all duration-200 shadow-sm"
             >
               Get Involved
             </Link>
@@ -156,7 +190,7 @@ export function SiteHeader({
           <div className="flex items-center gap-2 lg:hidden">
             <Link
               href="/donate"
-              className="flex items-center gap-1.5 rounded-md bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] text-[#0B1D3A] px-3 py-1.5 text-xs font-black uppercase tracking-[0.08em] shadow-md shadow-[#C9A227]/30 ring-1 ring-amber-300/50"
+              className="flex items-center gap-1.5 rounded-md bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] text-[#0B1D3A] px-3.5 py-1.5 text-xs font-black uppercase tracking-[0.08em] shadow-md shadow-[#C9A227]/30 ring-1 ring-amber-300/50"
             >
               <Heart size={13} className="fill-[#0B1D3A] text-[#0B1D3A]" />
               <span>Donate</span>
@@ -216,7 +250,26 @@ export function SiteHeader({
                 Navigation
               </div>
               {navItems.map((item) => {
+                const isDonate = item.href === "/donate" || item.label?.toLowerCase() === "donate"
                 const active = isRouteActive(item.href)
+
+                if (isDonate) {
+                  return (
+                    <Link
+                      key={item.id}
+                      href="/donate"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-between px-3.5 py-3 rounded-lg text-sm font-black uppercase tracking-[0.08em] bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] text-[#0B1D3A] shadow-md my-1.5"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Heart size={16} className="fill-[#0B1D3A]" />
+                        <span>Donate to Athletes</span>
+                      </span>
+                      <ChevronRight size={16} />
+                    </Link>
+                  )
+                }
+
                 return (
                   <Link
                     key={item.id}
