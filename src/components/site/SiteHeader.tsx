@@ -50,29 +50,14 @@ export function SiteHeader({
   const whatsapp = settings?.whatsapp || settings?.phone || ""
   const logo = settings?.logo_url || "/assets/logo-circle.png"
 
-  // Ensure Donate is always in the navbar items list
-  const hasDonate = nav.some(
-    (item) => item.href === "/donate" || item.label?.toLowerCase() === "donate",
+  // Center navigation links (content pages only — action buttons sit together on the right)
+  const navItems = nav.filter(
+    (item) =>
+      item.href !== "/donate" &&
+      item.label?.toLowerCase() !== "donate" &&
+      item.href !== "/get-involved" &&
+      item.label?.toLowerCase() !== "get involved",
   )
-  const navItems = hasDonate
-    ? nav
-    : [
-        ...nav,
-        {
-          id: "nav-donate-tab",
-          label: "Donate",
-          url: "/donate",
-          href: "/donate",
-          type: "header",
-          target: "_self",
-          display_order: 99,
-          is_active: true,
-          is_external: false,
-          parent_id: null,
-          created_at: "",
-          updated_at: "",
-        },
-      ]
 
   const isRouteActive = (href: string) => {
     if (href === "/") return pathname === "/"
@@ -87,7 +72,7 @@ export function SiteHeader({
           scrolled ? "py-2 bg-[#0B1D3A]/98 border-[#C9A227]/25 shadow-xl" : "py-2.5 sm:py-3",
         )}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8">
           {/* Brand Emblem & Logo */}
           <Link
             href="/"
@@ -121,21 +106,7 @@ export function SiteHeader({
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 2xl:gap-2 mx-auto">
             {navItems.map((item) => {
-              const isDonate = item.href === "/donate" || item.label?.toLowerCase() === "donate"
               const active = isRouteActive(item.href)
-
-              if (isDonate) {
-                return (
-                  <Link
-                    key={item.id}
-                    href="/donate"
-                    className="relative flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase tracking-wider rounded-md bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] hover:from-[#E8C44D] hover:via-[#D4AC2D] hover:to-[#C09623] text-[#0B1D3A] shadow-md shadow-[#C9A227]/30 hover:scale-105 active:scale-95 transition-all whitespace-nowrap ring-1 ring-amber-300/60 ml-1"
-                  >
-                    <Heart size={13} className="fill-[#0B1D3A] text-[#0B1D3A]" />
-                    <span>Donate</span>
-                  </Link>
-                )
-              }
 
               return (
                 <Link
@@ -157,7 +128,7 @@ export function SiteHeader({
             })}
           </nav>
 
-          {/* Desktop Right CTA Area */}
+          {/* Desktop Right Action Area: Get Involved + Donate (Always fully visible side-by-side) */}
           <div className="hidden lg:flex shrink-0 items-center gap-2 xl:gap-3">
             {phone && (
               <a
@@ -172,14 +143,17 @@ export function SiteHeader({
 
             <Link
               href="/get-involved"
-              className="hidden xl:inline-flex shrink-0 whitespace-nowrap rounded-md border border-[#C9A227]/60 bg-[#C9A227]/5 hover:bg-[#C9A227] hover:text-[#0B1D3A] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#C9A227] transition-all duration-200 shadow-sm"
+              className={cn(
+                "inline-flex shrink-0 whitespace-nowrap rounded-md border border-[#C9A227]/70 bg-[#C9A227]/10 hover:bg-[#C9A227] hover:text-[#0B1D3A] px-3 py-1.5 xl:px-3.5 xl:py-2 text-[11.5px] xl:text-xs font-bold uppercase tracking-[0.08em] text-[#C9A227] transition-all duration-200 shadow-sm",
+                pathname === "/get-involved" && "bg-[#C9A227] text-[#0B1D3A]"
+              )}
             >
               Get Involved
             </Link>
 
             <Link
               href="/donate"
-              className="group shrink-0 whitespace-nowrap rounded-md bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] hover:from-[#E8C44D] hover:via-[#D4AC2D] hover:to-[#C09623] text-[#0B1D3A] px-4 py-2 text-xs font-black uppercase tracking-[0.09em] shadow-[0_0_18px_rgba(201,162,39,0.35)] hover:shadow-[0_0_26px_rgba(201,162,39,0.55)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-1.5 ring-1 ring-amber-300/60"
+              className="group inline-flex shrink-0 whitespace-nowrap rounded-md bg-gradient-to-r from-[#DFB738] via-[#C9A227] to-[#B38918] hover:from-[#E8C44D] hover:via-[#D4AC2D] hover:to-[#C09623] text-[#0B1D3A] px-3.5 py-1.5 xl:px-4 xl:py-2 text-[11.5px] xl:text-xs font-black uppercase tracking-[0.09em] shadow-[0_0_18px_rgba(201,162,39,0.35)] hover:shadow-[0_0_26px_rgba(201,162,39,0.55)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 items-center gap-1.5 ring-1 ring-amber-300/60"
             >
               <Heart size={14} className="fill-[#0B1D3A] text-[#0B1D3A] group-hover:scale-110 transition-transform" />
               <span>Donate</span>
