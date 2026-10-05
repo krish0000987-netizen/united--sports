@@ -107,8 +107,11 @@ export function AdminSidebar({ profile, email }: { profile: AdminProfile | null;
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => {
-    // Auto-expand the section containing the current path
-    const result: Record<string, boolean> = {}
+    // Keep Website and Content open by default so Footer, Navigation, etc. are immediately visible
+    const result: Record<string, boolean> = {
+      Website: true,
+      Content: true,
+    }
     NAV_ITEMS.forEach((item) => {
       if (item.children?.some((c) => c.href && pathname.startsWith(c.href))) {
         result[item.label] = true

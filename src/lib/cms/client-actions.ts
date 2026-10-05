@@ -527,16 +527,35 @@ export async function deleteCmsPage(id: string): Promise<Result<never>> {
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 
+function normalizeNavigationInput(input: Record<string, unknown>): Record<string, unknown> {
+  const { display_order, is_active, sort_order, is_visible, href, url, ...rest } = input
+  const payload: Record<string, unknown> = { ...rest }
+  if (sort_order !== undefined || display_order !== undefined) {
+    payload.sort_order = sort_order ?? display_order
+  }
+  if (is_visible !== undefined || is_active !== undefined) {
+    payload.is_visible = is_visible ?? is_active
+  }
+  if (url !== undefined || href !== undefined) {
+    payload.url = url ?? href
+  }
+  return payload
+}
+
 export async function createNavigationItem(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("navigation_items").insert(input).select().single()
+  const payload = normalizeNavigationInput(input)
+  if (payload.sort_order === undefined) payload.sort_order = 0
+  if (payload.is_visible === undefined) payload.is_visible = true
+  const { data, error } = await supabase.from("navigation_items").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateNavigationItem(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("navigation_items").update(input).eq("id", id).select().single()
+  const payload = normalizeNavigationInput(input)
+  const { data, error } = await supabase.from("navigation_items").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
@@ -550,16 +569,41 @@ export async function deleteNavigationItem(id: string): Promise<Result<never>> {
 
 // ── Footer ───────────────────────────────────────────────────────────────────
 
+function normalizeFooterSectionInput(input: Record<string, unknown>): Record<string, unknown> {
+  const { display_order, is_active, sort_order, is_visible, title, slug, ...rest } = input
+  const payload: Record<string, unknown> = { ...rest }
+  if (title !== undefined) payload.title = title
+  if (sort_order !== undefined || display_order !== undefined) {
+    payload.sort_order = sort_order ?? display_order
+  }
+  if (is_visible !== undefined || is_active !== undefined) {
+    payload.is_visible = is_visible ?? is_active
+  }
+  if (slug !== undefined) {
+    payload.slug = slug
+  } else if (title !== undefined && typeof title === "string") {
+    payload.slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+  }
+  return payload
+}
+
 export async function createFooterSection(input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("footer_sections").insert(input).select().single()
+  const payload = normalizeFooterSectionInput(input)
+  if (payload.sort_order === undefined) payload.sort_order = 0
+  if (payload.is_visible === undefined) payload.is_visible = true
+  if (!payload.slug && typeof payload.title === "string") {
+    payload.slug = payload.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+  }
+  const { data, error } = await supabase.from("footer_sections").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }
 
 export async function updateFooterSection(id: string, input: Record<string, unknown>): Promise<Result> {
   const supabase = createClient()
-  const { data, error } = await supabase.from("footer_sections").update(input).eq("id", id).select().single()
+  const payload = normalizeFooterSectionInput(input)
+  const { data, error } = await supabase.from("footer_sections").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
   return { data, error: null }
 }

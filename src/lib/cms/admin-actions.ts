@@ -849,18 +849,48 @@ export async function getAllCmsPages() {
 
 // ── Navigation ───────────────────────────────────────────────────────────────
 
+function normalizeNavigationInput(input: Record<string, unknown>): Record<string, unknown> {
+  const { display_order, is_active, sort_order, is_visible, href, url, ...rest } = input
+  const payload: Record<string, unknown> = { ...rest }
+  if (sort_order !== undefined || display_order !== undefined) {
+    payload.sort_order = sort_order ?? display_order
+  }
+  if (is_visible !== undefined || is_active !== undefined) {
+    payload.is_visible = is_visible ?? is_active
+  }
+  if (url !== undefined || href !== undefined) {
+    payload.url = url ?? href
+  }
+  return payload
+}
+
+function normalizeNavigationRow(row: any) {
+  if (!row) return null
+  return {
+    ...row,
+    href: row.url || row.href || "",
+    url: row.url || row.href || "",
+    display_order: row.sort_order ?? row.display_order ?? 0,
+    is_active: row.is_visible ?? row.is_active ?? true,
+  }
+}
+
 export async function createNavigationItem(input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase.from("navigation_items").insert(input).select().single()
+  const payload = normalizeNavigationInput(input)
+  if (payload.sort_order === undefined) payload.sort_order = 0
+  if (payload.is_visible === undefined) payload.is_visible = true
+  const { data, error } = await supabase.from("navigation_items").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  return { data: normalizeNavigationRow(data), error: null }
 }
 
 export async function updateNavigationItem(id: string, input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase.from("navigation_items").update(input).eq("id", id).select().single()
+  const payload = normalizeNavigationInput(input)
+  const { data, error } = await supabase.from("navigation_items").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  return { data: normalizeNavigationRow(data), error: null }
 }
 
 export async function deleteNavigationItem(id: string): Promise<Result<null>> {
@@ -875,16 +905,23 @@ export async function getAllNavigationItems() {
   const { data, error } = await supabase
     .from("navigation_items")
     .select("*")
-    .order("display_order", { ascending: true })
-  if (error) { console.error("[cms] getAllNavigationItems:", error.message); return [] }
-  return data || []
+    .order("sort_order", { ascending: true })
+  if (error) {
+    // Fallback if sort_order isn't available
+    const { data: fallback } = await supabase
+      .from("navigation_items")
+      .select("*")
+      .order("created_at", { ascending: true })
+    return (fallback || []).map(normalizeNavigationRow)
+  }
+  return (data || []).map(normalizeNavigationRow)
 }
 
 export async function updateNavigationOrder(items: { id: string; display_order: number }[]): Promise<Result<null>> {
   const supabase = await createClient()
   const results = await Promise.all(
     items.map((item) =>
-      supabase.from("navigation_items").update({ display_order: item.display_order }).eq("id", item.id),
+      supabase.from("navigation_items").update({ sort_order: item.display_order }).eq("id", item.id),
     ),
   )
   const firstError = results.find((r) => r.error)?.error
@@ -894,18 +931,52 @@ export async function updateNavigationOrder(items: { id: string; display_order: 
 
 // ── Footer ───────────────────────────────────────────────────────────────────
 
+function normalizeFooterSectionInput(input: Record<string, unknown>): Record<string, unknown> {
+  const { display_order, is_active, sort_order, is_visible, title, slug, ...rest } = input
+  const payload: Record<string, unknown> = { ...rest }
+  if (title !== undefined) payload.title = title
+  if (sort_order !== undefined || display_order !== undefined) {
+    payload.sort_order = sort_order ?? display_order
+  }
+  if (is_visible !== undefined || is_active !== undefined) {
+    payload.is_visible = is_visible ?? is_active
+  }
+  if (slug !== undefined) {
+    payload.slug = slug
+  } else if (title !== undefined && typeof title === "string") {
+    payload.slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+  }
+  return payload
+}
+
+function normalizeFooterSectionRow(row: any) {
+  if (!row) return null
+  return {
+    ...row,
+    display_order: row.sort_order ?? row.display_order ?? 0,
+    is_active: row.is_visible ?? row.is_active ?? true,
+  }
+}
+
 export async function createFooterSection(input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase.from("footer_sections").insert(input).select().single()
+  const payload = normalizeFooterSectionInput(input)
+  if (payload.sort_order === undefined) payload.sort_order = 0
+  if (payload.is_visible === undefined) payload.is_visible = true
+  if (!payload.slug && typeof payload.title === "string") {
+    payload.slug = payload.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+  }
+  const { data, error } = await supabase.from("footer_sections").insert(payload).select().single()
   if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  return { data: normalizeFooterSectionRow(data), error: null }
 }
 
 export async function updateFooterSection(id: string, input: Record<string, unknown>): Promise<Result<unknown>> {
   const supabase = await createClient()
-  const { data, error } = await supabase.from("footer_sections").update(input).eq("id", id).select().single()
+  const payload = normalizeFooterSectionInput(input)
+  const { data, error } = await supabase.from("footer_sections").update(payload).eq("id", id).select().single()
   if (error) return { data: null, error: errMessage(error) }
-  return { data, error: null }
+  return { data: normalizeFooterSectionRow(data), error: null }
 }
 
 export async function deleteFooterSection(id: string): Promise<Result<null>> {
@@ -917,20 +988,37 @@ export async function deleteFooterSection(id: string): Promise<Result<null>> {
 
 export async function getAllFooterSections() {
   const supabase = await createClient()
-  const { data: sections, error } = await supabase
+  let sections: any[] = []
+  
+  // Try sort_order first (actual DB column)
+  const { data: s1, error: err1 } = await supabase
     .from("footer_sections")
     .select("*")
-    .order("display_order", { ascending: true })
-  if (error) { console.error("[cms] getAllFooterSections:", error.message); return [] }
-  const { data: links, error: linksError } = await supabase
+    .order("sort_order", { ascending: true })
+  
+  if (!err1 && s1) {
+    sections = s1
+  } else {
+    // Fallback if schema changed
+    const { data: s2, error: err2 } = await supabase
+      .from("footer_sections")
+      .select("*")
+      .order("created_at", { ascending: true })
+    if (!err2 && s2) sections = s2
+  }
+
+  const { data: links } = await supabase
     .from("footer_links")
     .select("*")
     .order("display_order", { ascending: true })
-  if (linksError) { console.error("[cms] getAllFooterSections links:", linksError.message); return [] }
-  return (sections || []).map((s) => ({
-    ...s,
-    links: (links || []).filter((l) => l.section_id === s.id),
-  }))
+
+  return sections.map((raw) => {
+    const s = normalizeFooterSectionRow(raw)!
+    return {
+      ...s,
+      links: (links || []).filter((l) => l.section_id === s.id),
+    }
+  })
 }
 
 export async function createFooterLink(input: Record<string, unknown>): Promise<Result<unknown>> {

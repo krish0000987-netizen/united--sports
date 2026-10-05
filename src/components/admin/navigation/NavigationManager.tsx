@@ -1,7 +1,8 @@
 "use client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Save, Loader2, X, ArrowUp, ArrowDown, Edit, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { Plus, Save, Loader2, X, ArrowUp, ArrowDown, Edit, Trash2, Navigation as NavIcon, Eye } from "lucide-react"
 import { Input, Select } from "@/components/ui/form"
 import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
@@ -86,10 +87,35 @@ export function NavigationManager({ items }: { items: NavigationItem[] }) {
 
   return (
     <>
-      <div className="flex items-center justify-end mb-4">
-        <Button onClick={() => setShowNew(true)} variant="primary">
-          <Plus size={14} /> New Item
-        </Button>
+      {/* Overview & Quick Actions Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-blue-50 text-[#0B1D3A] flex items-center justify-center shrink-0">
+            <NavIcon size={20} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="font-bold text-slate-900 text-sm">Header Navigation Tabs</h2>
+              <Badge variant="info">Navbar</Badge>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {items.length} items configured &bull; {items.filter(i => i.is_active).length} visible on site
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/"
+            target="_blank"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200"
+          >
+            <Eye size={13} /> View Website
+          </Link>
+          <Button onClick={() => setShowNew(true)} variant="primary">
+            <Plus size={14} /> New Item
+          </Button>
+        </div>
       </div>
 
       {showNew && (

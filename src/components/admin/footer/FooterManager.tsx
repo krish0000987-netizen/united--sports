@@ -1,7 +1,8 @@
 "use client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Save, Loader2, X, Trash2, Edit, ArrowUp, ArrowDown, ExternalLink } from "lucide-react"
+import Link from "next/link"
+import { Plus, Save, Loader2, X, Trash2, Edit, ArrowUp, ArrowDown, ExternalLink, PanelBottom, RotateCcw, Eye } from "lucide-react"
 import { Input } from "@/components/ui/form"
 import { Card, CardHeader, CardTitle, CardBody, Badge } from "@/components/ui/admin"
 import { Button } from "@/components/admin/Button"
@@ -27,6 +28,75 @@ export function FooterManager({ sections }: { sections: FooterSection[] }) {
   const [linkSectionId, setLinkSectionId] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const { confirm, dialog } = useConfirm()
+
+  async function seedDefaults() {
+    setBusy("seeding")
+    try {
+      const defaultSections = [
+        {
+          title: "Explore",
+          sort_order: 1,
+          is_visible: true,
+          links: [
+            { label: "Home", href: "/", display_order: 1 },
+            { label: "About Us", href: "/about", display_order: 2 },
+            { label: "Programmes", href: "/programmes", display_order: 3 },
+            { label: "Popular Sports", href: "/athletes", display_order: 4 },
+            { label: "Events", href: "/events", display_order: 5 },
+            { label: "News", href: "/news", display_order: 6 },
+            { label: "Gallery", href: "/gallery", display_order: 7 },
+            { label: "Contact", href: "/contact", display_order: 8 },
+          ],
+        },
+        {
+          title: "Get Involved",
+          sort_order: 2,
+          is_visible: true,
+          links: [
+            { label: "Donate to Athletes", href: "/donate", display_order: 1 },
+            { label: "Support Our Mission", href: "/get-involved", display_order: 2 },
+            { label: "Volunteer with Us", href: "/get-involved#volunteer", display_order: 3 },
+            { label: "Partner as Sponsor", href: "/get-involved#partner", display_order: 4 },
+          ],
+        },
+        {
+          title: "Contact",
+          sort_order: 3,
+          is_visible: true,
+          links: [
+            { label: "Get in Touch", href: "/contact", display_order: 1 },
+            { label: "FAQ", href: "/contact#faq", display_order: 2 },
+            { label: "Privacy Policy", href: "/privacy", display_order: 3 },
+          ],
+        },
+      ]
+
+      for (const s of defaultSections) {
+        const secRes = await createFooterSection({
+          title: s.title,
+          display_order: s.sort_order,
+          is_active: s.is_visible,
+        })
+        if (secRes.data?.id) {
+          for (const l of s.links) {
+            await createFooterLink({
+              section_id: secRes.data.id,
+              label: l.label,
+              href: l.href,
+              display_order: l.display_order,
+              is_external: false,
+            })
+          }
+        }
+      }
+      toast.success("Default footer sections restored")
+      router.refresh()
+    } catch {
+      toast.error("Failed to restore default sections")
+    } finally {
+      setBusy(null)
+    }
+  }
 
   async function moveSection(section: FooterSection, dir: -1 | 1) {
     setBusy(section.id)
@@ -139,10 +209,35 @@ export function FooterManager({ sections }: { sections: FooterSection[] }) {
 
   return (
     <>
-      <div className="flex items-center justify-end mb-4">
-        <Button onClick={() => setShowNewSection(true)} variant="primary">
-          <Plus size={14} /> New Section
-        </Button>
+      {/* Overview & Quick Actions Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-amber-50 text-[#C9A227] flex items-center justify-center shrink-0">
+            <PanelBottom size={20} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="font-bold text-slate-900 text-sm">Website Footer Columns</h2>
+              <Badge variant="success">Live</Badge>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {sections.length} active column{sections.length === 1 ? "" : "s"} &bull; {sections.reduce((acc, s) => acc + (s.links?.length || 0), 0)} total links configured
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/"
+            target="_blank"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200"
+          >
+            <Eye size={13} /> View Website
+          </Link>
+          <Button onClick={() => setShowNewSection(true)} variant="primary">
+            <Plus size={14} /> New Column
+          </Button>
+        </div>
       </div>
 
       {showNewSection && (
@@ -161,8 +256,17 @@ export function FooterManager({ sections }: { sections: FooterSection[] }) {
       <div className="space-y-4">
         {sections.length === 0 && !showNewSection && (
           <Card>
-            <div className="p-8 text-center text-sm text-slate-500">
-              No footer sections yet. Create your first section above.
+            <div className="p-8 text-center text-sm text-slate-500 space-y-4">
+              <p>No footer sections configured yet.</p>
+              <div className="flex items-center justify-center gap-3">
+                <Button onClick={() => setShowNewSection(true)} variant="primary" size="sm">
+                  <Plus size={14} /> Create First Column
+                </Button>
+                <Button onClick={seedDefaults} disabled={busy === "seeding"} variant="outline" size="sm">
+                  <RotateCcw size={14} className={busy === "seeding" ? "animate-spin" : ""} />
+                  {busy === "seeding" ? "Restoring..." : "Restore Default Columns"}
+                </Button>
+              </div>
             </div>
           </Card>
         )}

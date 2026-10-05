@@ -1059,13 +1059,33 @@ export async function getNavigationItemsServer(): Promise<NavigationItem[]> {
   try {
     const c = createPublicClient()
     if (!c) return DEFAULT_NAVIGATION_ITEMS
-    const { data, error } = await c
+    
+    let items: any[] | null = null
+    const { data: d1, error: err1 } = await c
       .from("navigation_items")
       .select("*")
-      .eq("is_active", true)
-      .order("display_order", { ascending: true })
-    if (error || !data || data.length === 0) return DEFAULT_NAVIGATION_ITEMS
-    return data as unknown as NavigationItem[]
+      .eq("is_visible", true)
+      .order("sort_order", { ascending: true })
+
+    if (!err1 && d1 && d1.length > 0) {
+      items = d1
+    } else {
+      const { data: d2 } = await c
+        .from("navigation_items")
+        .select("*")
+        .order("created_at", { ascending: true })
+      if (d2 && d2.length > 0) items = d2
+    }
+
+    if (!items || items.length === 0) return DEFAULT_NAVIGATION_ITEMS
+
+    return items.map((item: any) => ({
+      ...item,
+      href: item.url || item.href || "",
+      url: item.url || item.href || "",
+      display_order: item.sort_order ?? item.display_order ?? 0,
+      is_active: item.is_visible ?? item.is_active ?? true,
+    })) as NavigationItem[]
   } catch {
     return DEFAULT_NAVIGATION_ITEMS
   }
@@ -1077,19 +1097,36 @@ export async function getFooterSectionsServer(): Promise<FooterSection[]> {
   try {
     const c = createPublicClient()
     if (!c) return DEFAULT_FOOTER_SECTIONS
-    const { data: sections, error } = await c
+
+    let sections: any[] | null = null
+    const { data: s1, error: err1 } = await c
       .from("footer_sections")
       .select("*")
-      .eq("is_active", true)
-      .order("display_order", { ascending: true })
-    if (error || !sections || sections.length === 0) return DEFAULT_FOOTER_SECTIONS
+      .eq("is_visible", true)
+      .order("sort_order", { ascending: true })
+
+    if (!err1 && s1 && s1.length > 0) {
+      sections = s1
+    } else {
+      const { data: s2 } = await c
+        .from("footer_sections")
+        .select("*")
+        .order("created_at", { ascending: true })
+      if (s2 && s2.length > 0) sections = s2
+    }
+
+    if (!sections || sections.length === 0) return DEFAULT_FOOTER_SECTIONS
+
     const { data: links } = await c
       .from("footer_links")
       .select("*")
       .in("section_id", sections.map((s) => s.id))
       .order("display_order", { ascending: true })
-    return (sections as FooterSection[]).map((s) => ({
+
+    return sections.map((s) => ({
       ...s,
+      display_order: s.sort_order ?? s.display_order ?? 0,
+      is_active: s.is_visible ?? s.is_active ?? true,
       links: (links || []).filter((l) => l.section_id === s.id),
     }))
   } catch {

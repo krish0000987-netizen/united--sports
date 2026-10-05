@@ -2,7 +2,7 @@ import Link from "next/link"
 import {
   Newspaper, Calendar, Trophy, Users, BookOpen,
   Images, MessageSquareQuote, Mail, Activity, ArrowRight,
-  Plus, Home as HomeIcon,
+  Plus, Home as HomeIcon, PanelBottom, Navigation as NavIcon, FileBox, Settings as SettingsIcon,
 } from "lucide-react"
 import { Card, CardHeader, CardTitle, StatCard, Badge, THead, TBody, TR, TH, TD, Table } from "@/components/ui/admin"
 import { getDashboardStats, getArticles, getEnquiries, getActivityLogs } from "@/lib/cms/admin-actions"
@@ -27,6 +27,93 @@ export default async function AdminDashboardPage() {
         <p className="text-sm text-slate-500 mt-1">
           Welcome back, {user.profile?.full_name || user.email}. Here&apos;s what&apos;s happening with your site.
         </p>
+      </div>
+
+      {/* Website Management Overview */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Link
+          href="/admin/footer"
+          className="group p-5 bg-white rounded-xl border border-slate-200 hover:border-[#C9A227] hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-start justify-between">
+            <div className="h-10 w-10 rounded-lg bg-amber-50 text-[#C9A227] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <PanelBottom size={20} />
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#C9A227] bg-amber-50/60 px-2 py-0.5 rounded">
+              Active
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="font-bold text-slate-900 group-hover:text-[#0B1D3A]">Footer Sections & Links</h3>
+            <p className="text-xs text-slate-500 mt-1">Manage footer columns, links, social handles, and copyright info.</p>
+          </div>
+          <span className="mt-3 text-xs font-semibold text-[#0B1D3A] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+            Manage Footer <ArrowRight size={12} />
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/navigation"
+          className="group p-5 bg-white rounded-xl border border-slate-200 hover:border-[#C9A227] hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-start justify-between">
+            <div className="h-10 w-10 rounded-lg bg-blue-50 text-[#0B1D3A] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <NavIcon size={20} />
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+              Navbar
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="font-bold text-slate-900 group-hover:text-[#0B1D3A]">Header Navigation</h3>
+            <p className="text-xs text-slate-500 mt-1">Reorder top navigation menu, add custom links, and set active tabs.</p>
+          </div>
+          <span className="mt-3 text-xs font-semibold text-[#0B1D3A] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+            Manage Navbar <ArrowRight size={12} />
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/homepage"
+          className="group p-5 bg-white rounded-xl border border-slate-200 hover:border-[#C9A227] hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-start justify-between">
+            <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <HomeIcon size={20} />
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+              Hero & CMS
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="font-bold text-slate-900 group-hover:text-[#0B1D3A]">Homepage Editor</h3>
+            <p className="text-xs text-slate-500 mt-1">Edit hero headline, subtext, call-to-actions, and section visibility.</p>
+          </div>
+          <span className="mt-3 text-xs font-semibold text-[#0B1D3A] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+            Edit Homepage <ArrowRight size={12} />
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/pages"
+          className="group p-5 bg-white rounded-xl border border-slate-200 hover:border-[#C9A227] hover:shadow-md transition-all flex flex-col justify-between"
+        >
+          <div className="flex items-start justify-between">
+            <div className="h-10 w-10 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <FileBox size={20} />
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded">
+              Pages
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="font-bold text-slate-900 group-hover:text-[#0B1D3A]">Site Pages</h3>
+            <p className="text-xs text-slate-500 mt-1">About Us, Contact, FAQ, and all custom static content pages.</p>
+          </div>
+          <span className="mt-3 text-xs font-semibold text-[#0B1D3A] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+            Manage Pages <ArrowRight size={12} />
+          </span>
+        </Link>
       </div>
 
       {/* Stats grid */}
@@ -88,14 +175,14 @@ export default async function AdminDashboardPage() {
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>
         <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <QuickAction href="/admin/footer" icon={<PanelBottom size={16} />} label="Edit Footer" />
+          <QuickAction href="/admin/navigation" icon={<NavIcon size={16} />} label="Edit Navbar" />
+          <QuickAction href="/admin/homepage" icon={<HomeIcon size={16} />} label="Edit Homepage" />
           <QuickAction href="/admin/articles/new" icon={<Plus size={16} />} label="New Article" />
           <QuickAction href="/admin/events/new" icon={<Plus size={16} />} label="New Event" />
           <QuickAction href="/admin/athletes/new" icon={<Plus size={16} />} label="New Athlete" />
           <QuickAction href="/admin/teams/new" icon={<Plus size={16} />} label="New Team" />
           <QuickAction href="/admin/programmes/new" icon={<Plus size={16} />} label="New Programme" />
-          <QuickAction href="/admin/gallery/new" icon={<Plus size={16} />} label="Add Gallery" />
-          <QuickAction href="/admin/testimonials/new" icon={<Plus size={16} />} label="New Testimonial" />
-          <QuickAction href="/admin/homepage" icon={<HomeIcon size={16} />} label="Edit Homepage" />
         </div>
       </Card>
 
